@@ -4,75 +4,35 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <title>Ranking de Bolsas</title>
-
-  <link rel="stylesheet" href="styles.css?v=8">
+  <link rel="stylesheet" href="styles.css?v=11">
 </head>
 
-<body>
-
-  <!-- BOTÓN OCULTO PARA LOGIN -->
-  <button
-    id="loginHotspot"
-    class="login-hotspot"
-    aria-label="Abrir inicio de sesión"
-    title="Iniciar sesión"
-    type="button">
-  </button>
-
-  <!-- BARRA SUPERIOR -->
+<body><button id="loginHotspot" class="login-hotspot" aria-label="Abrir inicio de sesión" title="Iniciar sesión"
+    type="button"></button>
   <header class="topbar">
-
     <div class="brand">
       <div class="brand-dot"></div>
-
       <div>
         <h1>Ranking de Bolsas</h1>
         <p>Clasificación por dinero</p>
       </div>
     </div>
-
-    <div class="top-actions">
-
-      <button
-        id="moneyOverviewBtn"
-        class="secondary-btn hidden"
-        type="button">
-        Dinero
-      </button>
-
-      <button
-        id="carlosResetBtn"
-        class="danger-btn hidden"
-        type="button">
-        Resetear dinero
-      </button>
-
+    <div class="top-actions"><button id="moneyOverviewBtn" class="secondary-btn hidden"
+        type="button">Dinero</button><button id="carlosResetBtn" class="danger-btn hidden" type="button">Resetear
+        dinero</button>
       <div id="sessionArea"></div>
-
-      <div id="statusPill" class="status-pill">
-        Solo lectura
-      </div>
-
+      <div id="statusPill" class="status-pill">Solo lectura</div>
     </div>
   </header>
-
-  <!-- CONTENIDO -->
   <main class="app-shell">
-
     <section class="rankings-grid">
-
-      <!-- 6 / 8 -->
       <article class="ranking-card">
-
         <div class="table-header">
-          <div>
-            <span class="eyebrow">GRUPO</span>
+          <div><span class="eyebrow">GRUPO</span>
             <h3>6 / 8</h3>
           </div>
         </div>
-
         <div class="table-wrap">
           <table>
             <thead>
@@ -81,29 +41,20 @@
                 <th>Nombre</th>
               </tr>
             </thead>
-
             <tbody id="rankingBody68">
               <tr>
-                <td colspan="2" class="empty">
-                  Cargando…
-                </td>
+                <td colspan="2" class="empty">Cargando…</td>
               </tr>
             </tbody>
           </table>
         </div>
-
       </article>
-
-      <!-- 12 -->
       <article class="ranking-card">
-
         <div class="table-header">
-          <div>
-            <span class="eyebrow">GRUPO</span>
+          <div><span class="eyebrow">GRUPO</span>
             <h3>12 Bolsas</h3>
           </div>
         </div>
-
         <div class="table-wrap">
           <table>
             <thead>
@@ -112,29 +63,20 @@
                 <th>Nombre</th>
               </tr>
             </thead>
-
             <tbody id="rankingBody2">
               <tr>
-                <td colspan="2" class="empty">
-                  Cargando…
-                </td>
+                <td colspan="2" class="empty">Cargando…</td>
               </tr>
             </tbody>
           </table>
         </div>
-
       </article>
-
-      <!-- 16 -->
       <article class="ranking-card">
-
         <div class="table-header">
-          <div>
-            <span class="eyebrow">GRUPO</span>
+          <div><span class="eyebrow">GRUPO</span>
             <h3>16 Bolsas</h3>
           </div>
         </div>
-
         <div class="table-wrap">
           <table>
             <thead>
@@ -143,29 +85,20 @@
                 <th>Nombre</th>
               </tr>
             </thead>
-
             <tbody id="rankingBody1">
               <tr>
-                <td colspan="2" class="empty">
-                  Cargando…
-                </td>
+                <td colspan="2" class="empty">Cargando…</td>
               </tr>
             </tbody>
           </table>
         </div>
-
       </article>
-
-      <!-- 20 -->
       <article class="ranking-card">
-
         <div class="table-header">
-          <div>
-            <span class="eyebrow">GRUPO</span>
+          <div><span class="eyebrow">GRUPO</span>
             <h3>20 Bolsas</h3>
           </div>
         </div>
-
         <div class="table-wrap">
           <table>
             <thead>
@@ -174,272 +107,65 @@
                 <th>Nombre</th>
               </tr>
             </thead>
-
             <tbody id="rankingBody0">
               <tr>
-                <td colspan="2" class="empty">
-                  Cargando…
-                </td>
+                <td colspan="2" class="empty">Cargando…</td>
               </tr>
             </tbody>
           </table>
         </div>
-
       </article>
-
     </section>
-
   </main>
-
-  <!-- LOGIN -->
   <dialog id="authDialog" class="dialog">
-
-    <form id="authForm" class="auth-card">
-
-      <button
-        type="button"
-        id="closeAuth"
-        class="close-btn"
-        aria-label="Cerrar">
-        ×
-      </button>
-
-      <span class="eyebrow">
-        ACCESO DE ADMINISTRADOR
-      </span>
-
+    <form id="authForm" class="auth-card"><button type="button" id="closeAuth" class="close-btn"
+        aria-label="Cerrar">×</button><span class="eyebrow">ACCESO DE ADMINISTRADOR</span>
       <h2>Iniciar sesión</h2>
-
-      <p>
-        Introduce una cuenta incluida en la colección
-        <strong>admin</strong>.
-      </p>
-
-      <label for="username">Usuario</label>
-
-      <input
-        id="username"
-        type="text"
-        required
-        placeholder="Usuario">
-
-      <label for="password">Contraseña</label>
-
-      <input
-        id="password"
-        type="password"
-        autocomplete="current-password"
-        required
-        placeholder="••••••••">
-
-      <button
-        id="authSubmit"
-        class="primary-btn"
-        type="submit">
-        Entrar
-      </button>
-
+      <p>Introduce una cuenta incluida en la colección <strong>admin</strong>.</p><label
+        for="username">Usuario</label><input id="username" type="text" required placeholder="Usuario"><label
+        for="password">Contraseña</label><input id="password" type="password" autocomplete="current-password" required
+        placeholder="••••••••"><button id="authSubmit" class="primary-btn" type="submit">Entrar</button>
       <p id="authMessage" class="form-message"></p>
-
     </form>
-
   </dialog>
-
-  <!-- AÑADIR PERSONA -->
   <dialog id="addPersonDialog" class="dialog">
-
-    <form id="addPersonForm" class="auth-card">
-
-      <button
-        type="button"
-        id="closeAddPerson"
-        class="close-btn"
-        aria-label="Cerrar">
-        ×
-      </button>
-
-      <span class="eyebrow">
-        NUEVA PERSONA
-      </span>
-
-      <h2>Añadir al ranking</h2>
-
-      <label for="personName">Nombre</label>
-
-      <input
-        id="personName"
-        type="text"
-        maxlength="40"
-        required
-        placeholder="Ej. Carlos">
-
-      <label for="initialMoney">Dinero inicial</label>
-
-      <input
-        id="initialMoney"
-        type="number"
-        min="0"
-        step="0.01"
-        value="0"
-        required>
-
-      <label for="personPhoto">Foto (opcional)</label>
-
-      <input
-        id="personPhoto"
-        type="file"
-        accept="image/*">
-
-      <p class="helper">
-        La persona se añadirá al grupo seleccionado.
-      </p>
-
-      <button
-        class="primary-btn"
-        type="submit">
-        Añadir persona
-      </button>
-
+    <form id="addPersonForm" class="auth-card"><button type="button" id="closeAddPerson" class="close-btn"
+        aria-label="Cerrar">×</button><span class="eyebrow">NUEVA PERSONA</span>
+      <h2>Añadir al ranking</h2><label for="personName">Nombre</label><input id="personName" type="text" maxlength="40"
+        required placeholder="Ej. Carlos"><label for="initialMoney">Dinero inicial</label><input id="initialMoney"
+        type="number" min="0" step="0.01" value="0" required><label for="personPhoto">Foto (opcional)</label><input
+        id="personPhoto" type="file" accept="image/*">
+      <p class="helper">La persona se añadirá al grupo seleccionado.</p><button class="primary-btn" type="submit">Añadir
+        persona</button>
       <p id="addPersonMessage" class="form-message"></p>
-
     </form>
-
   </dialog>
-
-  <!-- AÑADIR DINERO -->
   <dialog id="moneyDialog" class="dialog">
-
-    <form id="moneyForm" class="auth-card">
-
-      <button
-        type="button"
-        id="closeMoney"
-        class="close-btn"
-        aria-label="Cerrar">
-        ×
-      </button>
-
-      <span class="eyebrow">
-        AÑADIR DINERO
-      </span>
-
-      <h2 id="moneyTitle">
-        Añadir dinero
-      </h2>
-
-      <label for="moneyAmount">
-        Cantidad
-      </label>
-
-      <input
-        id="moneyAmount"
-        type="number"
-        min="0.01"
-        step="0.01"
-        required
-        placeholder="0.00">
-
-      <button
-        class="primary-btn"
-        type="submit">
-        Sumar dinero
-      </button>
-
-      <button
-        id="editPersonBtn"
-        class="secondary-btn"
-        type="button">
-        Editar persona
-      </button>
-
+    <form id="moneyForm" class="auth-card"><button type="button" id="closeMoney" class="close-btn"
+        aria-label="Cerrar">×</button><span class="eyebrow">AÑADIR DINERO</span>
+      <h2 id="moneyTitle">Añadir dinero</h2><label for="moneyAmount">Cantidad</label><input id="moneyAmount"
+        type="number" min="0.01" step="0.01" required placeholder="0.00"><button class="primary-btn" type="submit">Sumar
+        dinero</button><button id="editPersonBtn" class="secondary-btn" type="button">Editar persona</button>
       <p id="moneyMessage" class="form-message"></p>
-
     </form>
-
   </dialog>
-
-  <!-- EDITAR PERSONA -->
   <dialog id="editPersonDialog" class="dialog">
-
-    <form id="editPersonForm" class="auth-card">
-
-      <button
-        type="button"
-        id="closeEditPerson"
-        class="close-btn"
-        aria-label="Cerrar">
-        ×
-      </button>
-
-      <span class="eyebrow">
-        EDITAR PERSONA
-      </span>
-
-      <h2>Editar persona</h2>
-
-      <label for="editPersonName">Nombre</label>
-
-      <input
-        id="editPersonName"
-        type="text"
-        maxlength="40"
-        required
-        placeholder="Nombre">
-
-      <label for="editPersonPhoto">
-        Cambiar foto
-      </label>
-
-      <input
-        id="editPersonPhoto"
-        type="file"
-        accept="image/*">
-
-      <p class="helper">
-        Si no seleccionas una foto, se conservará la actual.
-      </p>
-
-      <button
-        id="saveEditPersonBtn"
-        class="primary-btn"
-        type="submit">
-        Guardar cambios
-      </button>
-
+    <form id="editPersonForm" class="auth-card"><button type="button" id="closeEditPerson" class="close-btn"
+        aria-label="Cerrar">×</button><span class="eyebrow">EDITAR PERSONA</span>
+      <h2>Editar persona</h2><label for="editPersonName">Nombre</label><input id="editPersonName" type="text"
+        maxlength="40" required placeholder="Nombre"><label for="editPersonPhoto">Cambiar foto</label><input
+        id="editPersonPhoto" type="file" accept="image/*">
+      <p class="helper">Si no seleccionas una foto, se conservará la actual.</p><button id="saveEditPersonBtn"
+        class="primary-btn" type="submit">Guardar cambios</button>
       <p id="editPersonMessage" class="form-message"></p>
-
     </form>
-
   </dialog>
-
-  <!-- VER DINERO DE TODOS -->
   <dialog id="moneyOverviewDialog" class="dialog money-overview-dialog">
-
-    <div class="auth-card money-overview-card">
-
-      <button
-        type="button"
-        id="closeMoneyOverview"
-        class="close-btn"
-        aria-label="Cerrar">
-        ×
-      </button>
-
-      <span class="eyebrow">
-        ADMINISTRACIÓN
-      </span>
-
+    <div class="auth-card money-overview-card"><button type="button" id="closeMoneyOverview" class="close-btn"
+        aria-label="Cerrar">×</button><span class="eyebrow">ADMINISTRACIÓN</span>
       <h2>Dinero de todos</h2>
-
-      <p class="helper">
-        Todas las personas de todos los grupos, ordenadas por dinero.
-      </p>
-
-      <div class="money-total-box">
-        <span>Total</span>
-        <strong id="moneyOverviewTotal">0,00 €</strong>
-      </div>
-
+      <p class="helper">Todas las personas de todos los grupos, ordenadas por dinero.</p>
+      <div class="money-total-box"><span>Total</span><strong id="moneyOverviewTotal">0,00 €</strong></div>
       <div class="money-overview-wrap">
         <table class="money-overview-table">
           <thead>
@@ -452,21 +178,14 @@
           </thead>
           <tbody id="moneyOverviewBody">
             <tr>
-              <td colspan="4" class="empty">
-                Cargando…
-              </td>
+              <td colspan="4" class="empty">Cargando…</td>
             </tr>
           </tbody>
         </table>
       </div>
-
       <p id="moneyOverviewMessage" class="form-message"></p>
-
     </div>
-
   </dialog>
-
-  <!-- FILA DE PERSONA -->
   <template id="rowTemplate">
 
     <tr class="person-row">
@@ -474,37 +193,34 @@
       <td class="position-cell"></td>
 
       <td>
+
         <div class="person-cell">
 
-          <img
-            class="avatar"
-            alt=""
-            hidden>
+          <div class="person-info">
 
-          <div class="avatar-fallback"></div>
+            <img class="avatar" alt="" hidden>
 
-          <span class="person-name"></span>
+            <div class="avatar-fallback"></div>
 
-          <button
-            class="add-money-btn"
-            title="Añadir dinero"
-            aria-label="Añadir dinero"
-            type="button">
+            <span class="person-name"></span>
+
+          </div>
+
+          <button class="add-money-btn" title="Añadir dinero" aria-label="Añadir dinero" type="button">
             +
           </button>
 
+          <span class="person-money hidden">
+          </span>
+
         </div>
+
       </td>
 
     </tr>
 
   </template>
-
-  <!-- CACHE BUSTER -->
-  <script
-    type="module"
-    src="app.js?v=8">
-  </script>
-
+  <script type="module" src="app.js?v=11"></script>
 </body>
+
 </html>

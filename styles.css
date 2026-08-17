@@ -1,97 +1,83 @@
+/* =========================================================
+   RANKING DE BOLSAS - CSS COMPLETO
+   ========================================================= */
+
 :root {
   --bg: #000;
-  --surface: rgba(5, 5, 5, .92);
-  --surface-2: #101010;
-
+  --card: rgba(5, 5, 5, 0.92);
+  --card-soft: rgba(15, 15, 15, 0.9);
   --text: #fff;
-  --muted: #a1a1aa;
-
+  --muted: #999;
   --line: #292929;
-
-  --accent: #fff;
-  --accent-2: #d4d4d8;
-
-  --danger: #ef4444;
-
-  --shadow:
-    0 20px 50px rgba(0, 0, 0, .65);
-
-  --radius: 22px;
 }
 
+
+/* =========================================================
+   RESET
+   ========================================================= */
 
 * {
   box-sizing: border-box;
 }
 
-
-html {
-  background: #000;
-}
-
-
+html,
 body {
   margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
   min-height: 100vh;
 
   font-family:
     Inter,
-    ui-sans-serif,
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
 
+  color: var(--text);
+
   background:
     #000
     url("./img/logo.png")
-    center center /
-    cover
+    center center / cover
     fixed
     no-repeat;
-
-  color: var(--text);
-
-  position: relative;
 }
-
 
 body::before {
   content: "";
 
   position: fixed;
-
   inset: 0;
 
-  background:
-    rgba(0, 0, 0, .78);
+  background: rgba(0, 0, 0, 0.72);
 
   z-index: -1;
 
   pointer-events: none;
 }
 
-
 button,
 input {
   font: inherit;
 }
 
-
 button {
   cursor: pointer;
 }
-
 
 .hidden {
   display: none !important;
 }
 
 
-/* =====================================================
-   LOGIN OCULTO
-   ===================================================== */
+/* =========================================================
+   LOGIN HOTSPOT
+   ========================================================= */
 
 .login-hotspot {
   position: fixed;
@@ -106,16 +92,16 @@ button {
 
   background: transparent;
 
-  z-index: 50;
+  z-index: 100;
 }
 
 
-/* =====================================================
-   TOPBAR
-   ===================================================== */
+/* =========================================================
+   BARRA SUPERIOR
+   ========================================================= */
 
 .topbar {
-  min-height: 84px;
+  min-height: 82px;
 
   display: flex;
 
@@ -125,24 +111,22 @@ button {
 
   gap: 20px;
 
-  padding: 14px 34px;
-
-  border-bottom:
-    1px solid rgba(255, 255, 255, .12);
+  padding: 14px 30px;
 
   background:
-    rgba(0, 0, 0, .82);
+    rgba(0, 0, 0, 0.85);
 
-  backdrop-filter:
-    blur(16px);
+  border-bottom:
+    1px solid rgba(255, 255, 255, 0.12);
+
+  backdrop-filter: blur(14px);
 
   position: sticky;
 
   top: 0;
 
-  z-index: 20;
+  z-index: 50;
 }
-
 
 .brand {
   display: flex;
@@ -154,117 +138,59 @@ button {
   min-width: 0;
 }
 
-
 .brand-dot {
   width: 12px;
   height: 12px;
 
-  flex: 0 0 auto;
+  flex: 0 0 12px;
 
   border-radius: 50%;
 
   background: #fff;
 
   box-shadow:
-    0 0 15px rgba(255, 255, 255, .5);
+    0 0 14px rgba(255, 255, 255, 0.45);
 }
-
 
 .brand h1 {
   margin: 0;
 
-  font-size: 17px;
+  font-size: 18px;
 
-  letter-spacing: -.02em;
-
-  color: #fff;
+  line-height: 1.1;
 }
 
-
 .brand p {
-  margin: 3px 0 0;
+  margin: 4px 0 0;
 
   color: var(--muted);
 
   font-size: 12px;
 }
 
-
 .top-actions {
   display: flex;
-
-  gap: 10px;
 
   align-items: center;
 
   justify-content: flex-end;
 
+  gap: 8px;
+
   flex-wrap: wrap;
 }
 
-
-/* =====================================================
-   SESIÓN
-   ===================================================== */
-
-.session-chip {
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-
-  background: #080808;
-
-  border:
-    1px solid var(--line);
-
-  border-radius: 999px;
-
-  padding:
-    7px 9px 7px 12px;
-
-  font-size: 13px;
-}
-
-
-.session-chip button {
-  border: 0;
-
-  border-radius: 999px;
-
-  padding: 9px 14px;
-
-  background: #fff;
-
-  color: #000;
-
-  font-weight: 700;
-}
-
-
-.session-chip button:hover {
-  background: #ddd;
-}
-
-
-/* =====================================================
-   STATUS
-   ===================================================== */
-
 .status-pill {
+  padding: 9px 12px;
+
   border:
     1px solid #333;
 
-  padding:
-    9px 12px;
-
   border-radius: 999px;
 
-  background:
-    rgba(0, 0, 0, .75);
+  background: #090909;
 
-  color: #a1a1aa;
+  color: #aaa;
 
   font-size: 12px;
 
@@ -272,31 +198,37 @@ button {
 }
 
 
-/* =====================================================
-   BOTONES
-   ===================================================== */
+/* =========================================================
+   BOTONES GENERALES
+   ========================================================= */
 
 .primary-btn {
+  display: block;
+
+  width: 100%;
+
   border: 0;
 
   border-radius: 999px;
 
-  padding: 12px 14px;
+  padding: 13px 18px;
 
   background: #fff;
 
   color: #000;
 
-  width: 100%;
+  font-weight: 800;
 
-  font-weight: 700;
+  text-align: center;
+
+  white-space: nowrap;
+
+  cursor: pointer;
 }
-
 
 .primary-btn:hover {
-  background: #e5e5e5;
+  background: #e7e7e7;
 }
-
 
 .secondary-btn {
   border:
@@ -304,8 +236,7 @@ button {
 
   border-radius: 999px;
 
-  padding:
-    9px 14px;
+  padding: 9px 14px;
 
   background: #111;
 
@@ -313,7 +244,6 @@ button {
 
   font-weight: 700;
 }
-
 
 .secondary-btn:hover {
   background: #fff;
@@ -321,294 +251,427 @@ button {
   color: #000;
 }
 
-
 .danger-btn {
   border:
     1px solid #7f1d1d;
 
   border-radius: 999px;
 
-  padding:
-    9px 14px;
+  padding: 9px 14px;
 
   background: #450a0a;
 
   color: #fca5a5;
+
+  font-weight: 700;
 }
 
 
-.danger-btn:hover {
-  background: #7f1d1d;
-
-  color: #fff;
-}
-
-
-/* =====================================================
+/* =========================================================
    CONTENIDO
-   ===================================================== */
+   ========================================================= */
 
 .app-shell {
   width:
-    min(1500px, calc(100% - 40px));
+    min(
+      1500px,
+      calc(100% - 40px)
+    );
 
   margin: 0 auto;
 
   padding:
-    50px 0 70px;
+    42px 0 70px;
 }
-
 
 .rankings-grid {
   display: grid;
 
   grid-template-columns:
-    repeat(4, minmax(0, 1fr));
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
 
   gap: 14px;
-
-  width: 100%;
 
   align-items: start;
 }
 
 
-/* =====================================================
-   TARJETAS
-   ===================================================== */
+/* =========================================================
+   TARJETA
+   ========================================================= */
 
 .ranking-card {
-  position: relative;
+  width: 100%;
 
   min-width: 0;
 
-  background:
-    rgba(0, 0, 0, .88);
+  padding: 18px;
 
   border:
     1px solid #292929;
 
-  border-radius: 18px;
+  border-radius: 20px;
+
+  background:
+    rgba(5, 5, 5, 0.91);
 
   box-shadow:
-    var(--shadow);
+    0 20px 50px rgba(0, 0, 0, 0.6);
 
-  padding: 18px;
-
-  backdrop-filter:
-    blur(12px);
+  backdrop-filter: blur(12px);
 
   overflow: hidden;
 }
 
-
 .table-header {
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
   margin-bottom: 14px;
 }
 
-
 .table-header h3 {
-  margin:
-    7px 0 0;
+  margin: 7px 0 0;
 
   font-size: 20px;
 
-  letter-spacing: -.03em;
+  line-height: 1;
 
-  color: #fff;
-
-  white-space: nowrap;
+  letter-spacing: -0.03em;
 }
-
 
 .eyebrow {
   font-size: 9px;
 
-  letter-spacing: .16em;
-
   font-weight: 800;
 
-  color: #a1a1aa;
+  letter-spacing: 0.16em;
+
+  color: #999;
 }
 
 
-/* =====================================================
+/* =========================================================
    TABLA
-   ===================================================== */
+   ========================================================= */
 
 .table-wrap {
+  width: 100%;
+
   overflow: hidden;
 
   border:
     1px solid #292929;
 
   border-radius: 13px;
-}
 
+  background: #000;
+}
 
 table {
   width: 100%;
 
   border-collapse: collapse;
 
-  background:
-    rgba(0, 0, 0, .85);
-
   table-layout: fixed;
+
+  background: #000;
 }
 
 
-th,
-td {
-  text-align: left;
+/* =========================================================
+   CABECERA
+   ========================================================= */
+
+thead th {
+  height: 36px;
 
   padding:
-    12px 9px;
+    0 8px;
 
   border-bottom:
     1px solid #292929;
 
-  color: #fff;
-}
+  background: #0b0b0b;
 
+  color: #999;
 
-th {
   font-size: 9px;
-
-  text-transform: uppercase;
-
-  letter-spacing: .10em;
-
-  color: #a1a1aa;
-
-  background: #0c0c0c;
-}
-
-
-tbody tr {
-  background:
-    rgba(0, 0, 0, .7);
-
-  transition:
-    background .2s ease;
-}
-
-
-tbody tr:hover {
-  background: #111;
-}
-
-
-tbody tr:last-child td {
-  border-bottom: 0;
-}
-
-
-/* =====================================================
-   POSICIÓN
-   ===================================================== */
-
-.position-cell {
-  width: 42px;
 
   font-weight: 800;
 
-  font-size: 12px;
+  letter-spacing: 0.1em;
+
+  text-align: left;
 }
 
 
-/* =====================================================
-   PERSONA
-   ===================================================== */
+/*
+   POSICIÓN PEQUEÑA
+*/
+
+thead th:first-child {
+  width: 38px;
+
+  padding-left: 8px;
+}
+
+thead th:nth-child(2) {
+  width: auto;
+
+  padding-left: 2px;
+}
+
+
+/* =========================================================
+   FILAS NORMALES
+   ========================================================= */
+
+tbody tr.person-row {
+  height: 54px;
+
+  border-bottom:
+    1px solid #292929;
+}
+
+tbody tr.person-row:last-child {
+  border-bottom: 0;
+}
+
+tbody tr.person-row:hover {
+  background: #0d0d0d;
+}
+
+
+/* =========================================================
+   CELDA POSICIÓN
+   ========================================================= */
+
+tbody tr.person-row td.position-cell {
+  width: 38px;
+
+  padding:
+    0 0 0 8px;
+
+  border: 0;
+
+  vertical-align: middle;
+
+  color: #fff;
+
+  font-size: 12px;
+
+  font-weight: 900;
+
+  text-align: left;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   CELDA PERSONA
+   ========================================================= */
+
+tbody tr.person-row td:nth-child(2) {
+  width: auto;
+
+  padding:
+    0 8px 0 2px;
+
+  border: 0;
+
+  vertical-align: middle;
+}
+
+
+/* =========================================================
+   PERSON-CELL
+   ========================================================= */
 
 .person-cell {
   display: flex;
 
   align-items: center;
 
+  width: 100%;
+
+  min-width: 0;
+
+  height: 100%;
+
+  margin: 0;
+
+  padding: 0;
+
+  gap: 7px;
+}
+
+
+/* =========================================================
+   FOTO + NOMBRE
+   ========================================================= */
+
+.person-info {
+  display: flex;
+
+  align-items: center;
+
+  flex: 1 1 auto;
+
+  width: auto;
+
+  min-width: 0;
+
+  height: 100%;
+
+  margin: 0;
+
+  padding: 0;
+
   gap: 7px;
 
-  min-width: 0;
-}
-
-
-.person-name {
-  font-weight: 700;
-
-  color: #fff;
-
   overflow: hidden;
-
-  text-overflow: ellipsis;
-
-  white-space: nowrap;
-
-  min-width: 0;
-
-  flex: 1;
 }
 
 
-/* =====================================================
-   AVATAR
-   ===================================================== */
+/* =========================================================
+   FOTO
+   ========================================================= */
 
-.avatar,
-.avatar-fallback {
-  width: 30px;
-  height: 30px;
+/*
+   SOLO se muestra la foto real.
+
+   El avatar-fallback se oculta para evitar
+   que aparezcan DOS círculos.
+*/
+
+.person-info .avatar-fallback {
+  display: none !important;
+}
+
+.person-info .avatar {
+  display: block;
 
   flex:
     0 0 30px;
+
+  width: 30px;
+
+  height: 30px;
+
+  min-width: 30px;
+
+  min-height: 30px;
+
+  max-width: 30px;
+
+  max-height: 30px;
+
+  margin: 0;
+
+  padding: 0;
+
+  border:
+    1px solid #333;
 
   border-radius: 50%;
 
   object-fit: cover;
 
-  border:
-    1px solid #333;
+  overflow: hidden;
 }
 
 
-.avatar-fallback {
-  background: #171717;
+/*
+   Si el IMG tiene hidden, no ocupa espacio.
+*/
+
+.person-info .avatar[hidden] {
+  display: none !important;
 }
 
 
-/* =====================================================
-   BOTÓN +
-   ===================================================== */
+/* =========================================================
+   NOMBRE
+   ========================================================= */
 
-.add-money-btn {
-  margin-left: auto;
+.person-name {
+  display: block;
 
-  width: 27px;
-  height: 27px;
+  flex: 1 1 auto;
 
-  min-width: 27px;
+  width: auto;
+
+  min-width: 0;
+
+  margin: 0;
 
   padding: 0;
 
-  border-radius: 50%;
+  overflow: hidden;
+
+  color: #fff;
+
+  font-size: 13px;
+
+  font-weight: 800;
+
+  line-height: 1.2;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+
+  text-align: left;
+}
+
+
+/* =========================================================
+   BOTÓN +
+   ========================================================= */
+
+.add-money-btn {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex:
+    0 0 28px;
+
+  width: 28px;
+
+  height: 28px;
+
+  min-width: 28px;
+
+  min-height: 28px;
+
+  max-width: 28px;
+
+  max-height: 28px;
+
+  margin: 0;
+
+  padding: 0;
 
   border:
     1px solid #444;
+
+  border-radius: 50%;
 
   background: #111;
 
   color: #fff;
 
-  font-size: 17px;
+  font-size: 16px;
+
+  font-weight: 500;
 
   line-height: 1;
 }
-
 
 .add-money-btn:hover {
   background: #fff;
@@ -617,67 +680,187 @@ tbody tr:last-child td {
 }
 
 
-/* =====================================================
-   VACÍO
-   ===================================================== */
+/* =========================================================
+   DINERO
+   ========================================================= */
 
-.empty {
+.person-money {
+  display: inline-block;
+
+  flex:
+    0 0 auto;
+
+  width: auto;
+
+  min-width: 35px;
+
+  max-width: 65px;
+
+  margin: 0;
+
+  padding: 0;
+
+  color: #fff;
+
+  font-size: 11px;
+
+  font-weight: 900;
+
+  line-height: 1;
+
+  text-align: right;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+.person-money.hidden {
+  display: none !important;
+}
+
+
+/* =========================================================
+   BOTÓN AÑADIR PERSONA
+   ========================================================= */
+
+/*
+   ESTA ES LA PARTE IMPORTANTE.
+
+   La fila tiene colspan="2", así que dejamos
+   que la celda ocupe TODA la tabla.
+*/
+
+tbody tr:has(td[colspan="2"]) {
+  display: table-row !important;
+
+  width: 100%;
+
+  height: auto;
+
+  border-bottom: 0 !important;
+
+  background: transparent;
+}
+
+tbody tr:has(td[colspan="2"]) > td[colspan="2"] {
+  display: table-cell !important;
+
+  width: 100% !important;
+
+  min-width: 100% !important;
+
+  max-width: 100% !important;
+
+  padding:
+    8px !important;
+
+  border: 0 !important;
+
+  vertical-align: middle;
+}
+
+
+/*
+   BOTÓN COMPLETO
+*/
+
+tbody tr:has(td[colspan="2"]) .primary-btn {
+  display: block !important;
+
+  width: 100% !important;
+
+  min-width: 100% !important;
+
+  max-width: 100% !important;
+
+  margin: 0 !important;
+
+  padding:
+    13px 16px !important;
+
+  border: 0 !important;
+
+  border-radius: 999px !important;
+
+  white-space: nowrap !important;
+
+  text-align: center !important;
+}
+
+
+/* =========================================================
+   ESTADO VACÍO
+   ========================================================= */
+
+tbody tr:has(.empty) {
+  display: table-row !important;
+
+  height: auto;
+
+  border-bottom: 0;
+}
+
+tbody tr:has(.empty) td {
+  width: 100% !important;
+
+  padding:
+    24px 8px !important;
+
   text-align: center;
 
   color: #777;
-
-  padding:
-    25px 8px;
 
   font-size: 11px;
 }
 
 
-/* =====================================================
+/* =========================================================
    DIALOG
-   ===================================================== */
+   ========================================================= */
 
 .dialog {
+  padding: 0;
+
   border: 0;
 
   border-radius: 24px;
 
-  padding: 0;
-
   background: transparent;
 }
 
-
 .dialog::backdrop {
   background:
-    rgba(0, 0, 0, .82);
+    rgba(0, 0, 0, 0.82);
 
-  backdrop-filter:
-    blur(8px);
+  backdrop-filter: blur(8px);
 }
 
-
 .auth-card {
-  width:
-    min(430px, calc(100vw - 30px));
+  position: relative;
 
-  background: #050505;
+  width:
+    min(
+      430px,
+      calc(100vw - 30px)
+    );
+
+  padding: 30px;
 
   border:
     1px solid #292929;
 
   border-radius: 24px;
 
-  padding: 30px;
-
-  box-shadow:
-    0 30px 80px rgba(0, 0, 0, .8);
-
-  position: relative;
+  background: #050505;
 
   color: #fff;
-}
 
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.8);
+}
 
 .auth-card h2 {
   margin:
@@ -685,41 +868,32 @@ tbody tr:last-child td {
 
   font-size: 30px;
 
-  letter-spacing: -.04em;
+  line-height: 1;
 
-  color: #fff;
+  letter-spacing: -0.04em;
 }
-
-
-.auth-card > p {
-  color: #a1a1aa;
-}
-
 
 .auth-card label {
   display: block;
 
-  font-size: 12px;
-
-  font-weight: 700;
-
   margin:
     17px 0 7px;
 
-  color: #fff;
-}
+  font-size: 12px;
 
+  font-weight: 700;
+}
 
 .auth-card input {
   width: 100%;
+
+  padding:
+    12px 13px;
 
   border:
     1px solid #333;
 
   border-radius: 12px;
-
-  padding:
-    12px 13px;
 
   outline: none;
 
@@ -728,41 +902,53 @@ tbody tr:last-child td {
   color: #fff;
 }
 
+.auth-card input:focus {
+  border-color: #fff;
+}
 
 .auth-card input::placeholder {
   color: #666;
 }
 
+.helper {
+  color: #777;
 
-.auth-card input:focus {
-  border-color: #fff;
-
-  box-shadow:
-    0 0 0 2px
-    rgba(255, 255, 255, .08);
+  font-size: 12px;
 }
 
+.form-message {
+  min-height: 18px;
+
+  color: #ef4444;
+
+  font-size: 12px;
+}
 
 .close-btn {
   position: absolute;
 
-  right: 14px;
   top: 14px;
+  right: 14px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
 
   border: 0;
+
+  border-radius: 50%;
 
   background: #171717;
 
   color: #fff;
 
-  border-radius: 50%;
-
-  width: 34px;
-  height: 34px;
-
   font-size: 22px;
 }
-
 
 .close-btn:hover {
   background: #fff;
@@ -771,42 +957,21 @@ tbody tr:last-child td {
 }
 
 
-.helper {
-  font-size: 12px;
-
-  color: #777;
-}
-
-
-.form-message {
-  min-height: 18px;
-
-  font-size: 12px;
-
-  color: #ef4444;
-}
-
-
-/* =====================================================
+/* =========================================================
    DINERO DE TODOS
-   ===================================================== */
-
-.money-overview-dialog {
-  max-width:
-    calc(100vw - 20px);
-}
-
+   ========================================================= */
 
 .money-overview-card {
   width:
-    min(900px, calc(100vw - 30px));
+    min(
+      900px,
+      calc(100vw - 30px)
+    );
 
-  max-height:
-    85vh;
+  max-height: 85vh;
 
   overflow: auto;
 }
-
 
 .money-total-box {
   display: flex;
@@ -831,24 +996,19 @@ tbody tr:last-child td {
   background: #0b0b0b;
 }
 
-
 .money-total-box span {
-  color: #a1a1aa;
+  color: #999;
 
   font-size: 12px;
 
   text-transform: uppercase;
 
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
 }
-
 
 .money-total-box strong {
   font-size: 22px;
-
-  color: #fff;
 }
-
 
 .money-overview-wrap {
   overflow: auto;
@@ -859,18 +1019,15 @@ tbody tr:last-child td {
   border-radius: 13px;
 }
 
-
 .money-overview-table {
   min-width: 620px;
 }
-
 
 .money-overview-table th,
 .money-overview-table td {
   padding:
     11px 12px;
 }
-
 
 .money-overview-table .money-value {
   text-align: right;
@@ -881,20 +1038,18 @@ tbody tr:last-child td {
 }
 
 
-/* =====================================================
+/* =========================================================
    SCROLLBAR
-   ===================================================== */
+   ========================================================= */
 
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-
 ::-webkit-scrollbar-track {
   background: #000;
 }
-
 
 ::-webkit-scrollbar-thumb {
   background: #333;
@@ -902,28 +1057,31 @@ tbody tr:last-child td {
   border-radius: 999px;
 }
 
-
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
 
 
-/* =====================================================
+/* =========================================================
    TABLET
-   ===================================================== */
+   ========================================================= */
 
 @media (max-width: 1200px) {
 
   .rankings-grid {
     grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
   }
+
 }
 
 
-/* =====================================================
+/* =========================================================
    MÓVIL
-   ===================================================== */
+   ========================================================= */
 
 @media (max-width: 650px) {
 
@@ -935,21 +1093,13 @@ tbody tr:last-child td {
       flex-start;
   }
 
-
   .brand p {
     display: none;
   }
 
-
-  .top-actions {
-    gap: 6px;
-  }
-
-
   .status-pill {
     display: none;
   }
-
 
   .app-shell {
     width: 100%;
@@ -957,7 +1107,6 @@ tbody tr:last-child td {
     padding:
       30px 12px 50px;
   }
-
 
   .rankings-grid {
     display: flex;
@@ -971,37 +1120,76 @@ tbody tr:last-child td {
 
     scroll-snap-type:
       x mandatory;
-
-    -webkit-overflow-scrolling:
-      touch;
   }
-
 
   .rankings-grid .ranking-card {
     flex:
-      0 0 280px;
+      0 0 320px;
 
     scroll-snap-align:
       start;
   }
-
 
   body {
     background-attachment:
       scroll;
   }
 
-
-  .money-overview-card {
-    width:
-      calc(100vw - 20px);
-
-    padding:
-      22px 16px;
+  thead th:first-child {
+    width: 36px;
   }
 
+  tbody tr.person-row td.position-cell {
+    width: 36px;
 
-  .money-total-box strong {
-    font-size: 18px;
+    padding-left: 6px;
   }
+
+  .person-info {
+    gap: 5px;
+  }
+
+  .person-name {
+    font-size: 12px;
+  }
+
+  .person-money {
+    min-width: 34px;
+
+    max-width: 60px;
+
+    font-size: 10px;
+  }
+
+}
+
+
+/* =========================================================
+   MÓVIL PEQUEÑO
+   ========================================================= */
+
+@media (max-width: 360px) {
+
+  .rankings-grid .ranking-card {
+    flex-basis: 290px;
+  }
+
+  thead th:first-child {
+    width: 34px;
+  }
+
+  tbody tr.person-row td.position-cell {
+    width: 34px;
+
+    padding-left: 5px;
+  }
+
+  .person-info .avatar {
+    width: 28px;
+    height: 28px;
+
+    min-width: 28px;
+    min-height: 28px;
+  }
+
 }

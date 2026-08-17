@@ -1,8 +1,6 @@
-console.log("Ranking de Bolsas - app.js v9");
+console.log("Ranking de Bolsas - app.js v11");
 
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
 import {
   getFirestore,
@@ -27,10 +25,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
 
 
-/* =========================================================
-   FIREBASE
-   ========================================================= */
-
 const firebaseConfig = {
   apiKey: "AIzaSyBJ2NFzLfXVlRbz8mL2bPNXyVMc4wZl_mk",
   authDomain: "fdsffsdf-a5398.firebaseapp.com",
@@ -41,24 +35,11 @@ const firebaseConfig = {
   measurementId: "G-DDW6LX4KFF"
 };
 
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-
-/* =========================================================
-   COLECCIONES
-   =========================================================
-
-   IMPORTANTE:
-   Firebase NO permite usar "/" en un nombre de colección.
-
-   En pantalla:
-   6 / 8
-
-   En Firebase:
-   6_8
-   ========================================================= */
 
 const TABLES = [
   "20 Bolsas",
@@ -66,6 +47,7 @@ const TABLES = [
   "12 Bolsas",
   "6_8"
 ];
+
 
 const ALL_COLLECTIONS = [
   "20 Bolsas",
@@ -76,10 +58,6 @@ const ALL_COLLECTIONS = [
   "8 Bolsas"
 ];
 
-
-/* =========================================================
-   ESTADO
-   ========================================================= */
 
 let currentAdmin = null;
 
@@ -92,38 +70,211 @@ let currentAddPersonTable = null;
 let currentEditPerson = null;
 let currentEditCollection = null;
 
+
+/*
+  TRUE = mostrar dinero junto al nombre.
+  FALSE = ocultarlo.
+*/
+let showMoneyInRankings = false;
+
+
 let unsubscribeRankings = [];
 
 
-/* =========================================================
-   HELPERS
-   ========================================================= */
+const $ = id =>
+  document.getElementById(id);
 
-const $ = id => document.getElementById(id);
+
+const els = {
+
+  loginHotspot:
+    $("loginHotspot"),
+
+  authDialog:
+    $("authDialog"),
+
+  authForm:
+    $("authForm"),
+
+  closeAuth:
+    $("closeAuth"),
+
+  authSubmit:
+    $("authSubmit"),
+
+  authMessage:
+    $("authMessage"),
+
+  username:
+    $("username"),
+
+  password:
+    $("password"),
+
+  sessionArea:
+    $("sessionArea"),
+
+  carlosResetBtn:
+    $("carlosResetBtn"),
+
+  statusPill:
+    $("statusPill"),
+
+  moneyButton:
+    $("moneyOverviewBtn"),
+
+  addPersonDialog:
+    $("addPersonDialog"),
+
+  addPersonForm:
+    $("addPersonForm"),
+
+  closeAddPerson:
+    $("closeAddPerson"),
+
+  personName:
+    $("personName"),
+
+  initialMoney:
+    $("initialMoney"),
+
+  personPhoto:
+    $("personPhoto"),
+
+  addPersonMessage:
+    $("addPersonMessage"),
+
+  moneyDialog:
+    $("moneyDialog"),
+
+  moneyForm:
+    $("moneyForm"),
+
+  closeMoney:
+    $("closeMoney"),
+
+  moneyTitle:
+    $("moneyTitle"),
+
+  moneyAmount:
+    $("moneyAmount"),
+
+  moneyMessage:
+    $("moneyMessage"),
+
+  editPersonBtn:
+    $("editPersonBtn"),
+
+  editPersonDialog:
+    $("editPersonDialog"),
+
+  closeEditPerson:
+    $("closeEditPerson"),
+
+  editPersonForm:
+    $("editPersonForm"),
+
+  editPersonName:
+    $("editPersonName"),
+
+  editPersonPhoto:
+    $("editPersonPhoto"),
+
+  editPersonMessage:
+    $("editPersonMessage"),
+
+  saveEditPersonBtn:
+    $("saveEditPersonBtn"),
+
+  moneyOverviewDialog:
+    $("moneyOverviewDialog"),
+
+  closeMoneyOverview:
+    $("closeMoneyOverview"),
+
+  moneyOverviewBody:
+    $("moneyOverviewBody"),
+
+  moneyOverviewTotal:
+    $("moneyOverviewTotal"),
+
+  moneyOverviewMessage:
+    $("moneyOverviewMessage"),
+
+  rowTemplate:
+    $("rowTemplate")
+
+};
+
+
+const rankingBodies = [
+
+  $("rankingBody0"),
+
+  $("rankingBody1"),
+
+  $("rankingBody2"),
+
+  $("rankingBody68")
+
+];
+
+
+const rankingPeople = [
+
+  [],
+
+  [],
+
+  [],
+
+  []
+
+];
+
 
 function escapeHtml(value) {
-  return String(value ?? "").replace(
+
+  return String(
+    value ?? ""
+  ).replace(
     /[&<>"']/g,
-    char => ({
+    c => ({
       "&": "&amp;",
       "<": "&lt;",
       ">": "&gt;",
       '"': "&quot;",
       "'": "&#039;"
-    }[char])
+    }[c])
   );
+
 }
 
-function showError(element, message) {
+
+function showError(
+  element,
+  message
+) {
+
   if (element) {
-    element.textContent = message || "";
+
+    element.textContent =
+      message || "";
+
   }
+
 }
 
-function firebaseErrorMessage(error) {
-  const code = error?.code || "";
+
+function firebaseErrorMessage(
+  error
+) {
+
+  const code =
+    error?.code || "";
 
   const messages = {
+
     "permission-denied":
       "Firebase ha rechazado la operación por las reglas de Firestore.",
 
@@ -141,387 +292,98 @@ function firebaseErrorMessage(error) {
 
     "failed-precondition":
       "Firebase necesita una configuración adicional."
+
   };
 
-  return messages[code] ||
+  return (
+    messages[code] ||
     error?.message ||
-    "Ha ocurrido un error.";
+    "Ha ocurrido un error."
+  );
+
 }
 
-function sortByMoney(a, b) {
-  return Number(b?.money || 0) -
-         Number(a?.money || 0);
-}
 
 function formatMoney(value) {
-  return Number(value || 0).toLocaleString(
-    "es-ES",
-    {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }
-  ) + " €";
-}
 
-function displayGroupName(name) {
-  return name === "6_8"
-    ? "6 / 8"
-    : name;
-}
+  const number = Number(value || 0);
 
+  const absolute = Math.abs(number);
 
-/* =========================================================
-   ELEMENTOS HTML EXISTENTES
-   ========================================================= */
+  let result;
 
-const els = {
-  loginHotspot: $("loginHotspot"),
+  if (absolute >= 1_000_000_000) {
 
-  authDialog: $("authDialog"),
-  authForm: $("authForm"),
-  closeAuth: $("closeAuth"),
-  authSubmit: $("authSubmit"),
-  authMessage: $("authMessage"),
-  username: $("username"),
-  password: $("password"),
+    result =
+      (number / 1_000_000_000)
+        .toFixed(1)
+        .replace(/\.0$/, "");
 
-  sessionArea: $("sessionArea"),
-  carlosResetBtn: $("carlosResetBtn"),
-  statusPill: $("statusPill"),
+    return `${result}B`;
 
-  addPersonDialog: $("addPersonDialog"),
-  addPersonForm: $("addPersonForm"),
-  closeAddPerson: $("closeAddPerson"),
-  personName: $("personName"),
-  initialMoney: $("initialMoney"),
-  personPhoto: $("personPhoto"),
-  addPersonMessage: $("addPersonMessage"),
-
-  moneyDialog: $("moneyDialog"),
-  moneyForm: $("moneyForm"),
-  closeMoney: $("closeMoney"),
-  moneyTitle: $("moneyTitle"),
-  moneyAmount: $("moneyAmount"),
-  moneyMessage: $("moneyMessage"),
-
-  rowTemplate: $("rowTemplate")
-};
-
-
-/* =========================================================
-   CUERPOS DE LOS RANKINGS
-   ========================================================= */
-
-const rankingBodies = [
-  $("rankingBody0"),
-  $("rankingBody1"),
-  $("rankingBody2"),
-  $("rankingBody68")
-];
-
-const rankingPeople = [
-  [],
-  [],
-  [],
-  []
-];
-
-
-/* =========================================================
-   CREAR BOTÓN "DINERO"
-   ========================================================= */
-
-function createMoneyButton() {
-
-  if ($("moneyOverviewBtn")) {
-    return;
   }
 
-  const button = document.createElement("button");
+  if (absolute >= 1_000_000) {
 
-  button.id = "moneyOverviewBtn";
-  button.type = "button";
-  button.className = "secondary-btn hidden";
-  button.textContent = "Dinero";
+    result =
+      (number / 1_000_000)
+        .toFixed(1)
+        .replace(/\.0$/, "");
 
-  const actions =
-    document.querySelector(".top-actions");
+    return `${result}M`;
 
-  if (actions) {
-    actions.insertBefore(
-      button,
-      actions.firstChild
-    );
   }
 
-  button.addEventListener(
-    "click",
-    openMoneyOverview
-  );
+  if (absolute >= 1_000) {
+
+    result =
+      (number / 1_000)
+        .toFixed(1)
+        .replace(/\.0$/, "");
+
+    return `${result}K`;
+
+  }
+
+  return `${Math.round(number)}$`;
+
 }
 
 
-/* =========================================================
-   CREAR VENTANA EDITAR
-   ========================================================= */
-
-function createEditDialog() {
-
-  if ($("editPersonDialog")) {
-    return;
-  }
-
-  const dialog = document.createElement("dialog");
-
-  dialog.id = "editPersonDialog";
-  dialog.className = "dialog";
-
-  dialog.innerHTML = `
-
-    <form id="editPersonForm" class="auth-card">
-
-      <button
-        type="button"
-        id="closeEditPerson"
-        class="close-btn"
-        aria-label="Cerrar">
-        ×
-      </button>
-
-      <span class="eyebrow">
-        EDITAR PERSONA
-      </span>
-
-      <h2>Editar persona</h2>
-
-      <label for="editPersonName">
-        Nombre
-      </label>
-
-      <input
-        id="editPersonName"
-        type="text"
-        maxlength="40"
-        required
-        placeholder="Nombre">
-
-      <label for="editPersonPhoto">
-        Cambiar foto
-      </label>
-
-      <input
-        id="editPersonPhoto"
-        type="file"
-        accept="image/*">
-
-      <p class="helper">
-        Si no eliges una foto nueva,
-        se conservará la actual.
-      </p>
-
-      <button
-        id="saveEditPerson"
-        class="primary-btn"
-        type="submit">
-        Guardar cambios
-      </button>
-
-      <p
-        id="editPersonMessage"
-        class="form-message">
-      </p>
-
-    </form>
-  `;
-
-  document.body.appendChild(dialog);
-
-  $("closeEditPerson").addEventListener(
-    "click",
-    () => dialog.close()
-  );
-
-  $("editPersonForm").addEventListener(
-    "submit",
-    saveEditedPerson
-  );
-}
-
-
-/* =========================================================
-   CREAR VENTANA DINERO DE TODOS
-   ========================================================= */
-
-function createMoneyOverviewDialog() {
-
-  if ($("moneyOverviewDialog")) {
-    return;
-  }
-
-  const dialog = document.createElement("dialog");
-
-  dialog.id = "moneyOverviewDialog";
-  dialog.className =
-    "dialog money-overview-dialog";
-
-  dialog.innerHTML = `
-
-    <div class="auth-card money-overview-card">
-
-      <button
-        type="button"
-        id="closeMoneyOverview"
-        class="close-btn"
-        aria-label="Cerrar">
-        ×
-      </button>
-
-      <span class="eyebrow">
-        ADMINISTRACIÓN
-      </span>
-
-      <h2>Dinero de todos</h2>
-
-      <p class="helper">
-        Todas las personas de todos los grupos.
-      </p>
-
-      <div class="money-total-box">
-
-        <span>
-          Total
-        </span>
-
-        <strong id="moneyOverviewTotal">
-          0,00 €
-        </strong>
-
-      </div>
-
-      <div class="money-overview-wrap">
-
-        <table class="money-overview-table">
-
-          <thead>
-
-            <tr>
-              <th>Pos.</th>
-              <th>Nombre</th>
-              <th>Grupo</th>
-              <th>Dinero</th>
-            </tr>
-
-          </thead>
-
-          <tbody id="moneyOverviewBody">
-
-            <tr>
-              <td
-                colspan="4"
-                class="empty">
-                Cargando…
-              </td>
-            </tr>
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-      <p
-        id="moneyOverviewMessage"
-        class="form-message">
-      </p>
-
-    </div>
-  `;
-
-  document.body.appendChild(dialog);
-
-  $("closeMoneyOverview").addEventListener(
-    "click",
-    () => dialog.close()
-  );
-}
-
-
-/* =========================================================
-   LOGIN
-   ========================================================= */
-
-async function loginAdmin(
-  username,
-  password
+function sortByMoney(
+  a,
+  b
 ) {
 
-  const cleanUsername =
-    username.trim().toLowerCase();
-
-  const adminCollection =
-    collection(
-      db,
-      "admin"
-    );
-
-  const q = query(
-    adminCollection,
-
-    where(
-      "usuario",
-      "==",
-      cleanUsername
-    ),
-
-    where(
-      "contraseña",
-      "==",
-      password
-    )
+  return (
+    Number(b?.money || 0) -
+    Number(a?.money || 0)
   );
 
-  const snapshot =
-    await getDocs(q);
-
-  if (snapshot.empty) {
-    return null;
-  }
-
-  const adminDoc =
-    snapshot.docs[0];
-
-  const data =
-    adminDoc.data();
-
-  if (data.activo === false) {
-    return null;
-  }
-
-  return {
-    id: adminDoc.id,
-
-    usuario:
-      data.usuario ||
-      cleanUsername,
-
-    nombre:
-      data.nombre ||
-      data.usuario ||
-      cleanUsername,
-
-    canReset:
-      data.canReset === true
-  };
 }
 
 
-/* =========================================================
-   SESIÓN
-   ========================================================= */
+function displayGroupName(
+  name
+) {
+
+  return [
+    "6_8",
+    "6 Bolsas",
+    "8 Bolsas"
+  ].includes(name)
+    ? "6 / 8"
+    : name;
+
+}
+
 
 function isAdmin() {
+
   return currentAdmin !== null;
+
 }
+
 
 function canResetMoney() {
 
@@ -540,7 +402,9 @@ function canResetMoney() {
     name === "carlos" ||
     currentAdmin.canReset === true
   );
+
 }
+
 
 function saveSession() {
 
@@ -551,6 +415,7 @@ function saveSession() {
     );
 
     return;
+
   }
 
   localStorage.setItem(
@@ -559,7 +424,9 @@ function saveSession() {
       currentAdmin
     )
   );
+
 }
+
 
 function loadSession() {
 
@@ -570,20 +437,18 @@ function loadSession() {
         "rankingAdmin"
       );
 
-    if (!saved) {
-      return;
-    }
+    if (saved) {
 
-    const admin =
-      JSON.parse(saved);
+      const admin =
+        JSON.parse(saved);
 
-    if (
-      admin &&
-      admin.usuario
-    ) {
+      if (admin?.usuario) {
 
-      currentAdmin =
-        admin;
+        currentAdmin =
+          admin;
+
+      }
+
     }
 
   } catch (error) {
@@ -593,14 +458,32 @@ function loadSession() {
       error
     );
 
-    currentAdmin = null;
+    currentAdmin =
+      null;
+
   }
+
 }
 
 
-/* =========================================================
-   INTERFAZ DE SESIÓN
-   ========================================================= */
+function updateMoneyButton() {
+
+  if (!els.moneyButton) {
+    return;
+  }
+
+  els.moneyButton.textContent =
+    showMoneyInRankings
+      ? "Ocultar dinero"
+      : "Dinero";
+
+  els.moneyButton.classList.toggle(
+    "hidden",
+    !isAdmin()
+  );
+
+}
+
 
 function updateSessionUI() {
 
@@ -608,40 +491,39 @@ function updateSessionUI() {
     return;
   }
 
-  const moneyButton =
-    $("moneyOverviewBtn");
 
   if (!currentAdmin) {
 
     els.sessionArea.innerHTML =
       "";
 
-    if (els.carlosResetBtn) {
+    els.carlosResetBtn?.classList.add(
+      "hidden"
+    );
 
-      els.carlosResetBtn
-        .classList
-        .add("hidden");
-    }
+    showMoneyInRankings =
+      false;
 
-    if (moneyButton) {
-
-      moneyButton
-        .classList
-        .add("hidden");
-    }
+    updateMoneyButton();
 
     if (els.statusPill) {
 
       els.statusPill.textContent =
         "Solo lectura";
+
     }
 
+    renderAllRankings();
+
     return;
+
   }
+
 
   const name =
     currentAdmin.nombre ||
     currentAdmin.usuario;
+
 
   els.sessionArea.innerHTML = `
 
@@ -654,50 +536,47 @@ function updateSessionUI() {
       <button
         id="logoutBtn"
         type="button">
+
         Salir
+
       </button>
 
     </div>
+
   `;
 
-  const logoutBtn =
-    $("logoutBtn");
 
-  if (logoutBtn) {
+  $("logoutBtn")?.addEventListener(
+    "click",
+    logout
+  );
 
-    logoutBtn.addEventListener(
-      "click",
-      logout
-    );
-  }
 
-  if (els.carlosResetBtn) {
+  els.carlosResetBtn?.classList.toggle(
+    "hidden",
+    !canResetMoney()
+  );
 
-    els.carlosResetBtn
-      .classList
-      .toggle(
-        "hidden",
-        !canResetMoney()
-      );
-  }
-
-  if (moneyButton) {
-
-    moneyButton
-      .classList
-      .remove("hidden");
-  }
 
   if (els.statusPill) {
 
     els.statusPill.textContent =
       "Administrador";
+
   }
+
+
+  updateMoneyButton();
+
+  renderAllRankings();
+
 }
+
 
 function logout() {
 
-  currentAdmin = null;
+  currentAdmin =
+    null;
 
   localStorage.removeItem(
     "rankingAdmin"
@@ -705,45 +584,499 @@ function logout() {
 
   updateSessionUI();
 
-  renderAllRankings();
 }
 
 
-/* =========================================================
-   RANKINGS
-   ========================================================= */
+async function loginAdmin(
+  username,
+  password
+) {
 
-function subscribeAllRankings() {
+  const cleanUsername =
+    username
+      .trim()
+      .toLowerCase();
 
-  unsubscribeRankings
-    .forEach(
-      unsubscribe => {
 
-        try {
-          unsubscribe();
-        } catch (_) {}
+  const q =
+    query(
+
+      collection(
+        db,
+        "admin"
+      ),
+
+      where(
+        "usuario",
+        "==",
+        cleanUsername
+      ),
+
+      where(
+        "contraseña",
+        "==",
+        password
+      )
+
+    );
+
+
+  const snapshot =
+    await getDocs(q);
+
+
+  if (snapshot.empty) {
+    return null;
+  }
+
+
+  const adminDoc =
+    snapshot.docs[0];
+
+  const data =
+    adminDoc.data();
+
+
+  if (
+    data.activo === false
+  ) {
+
+    return null;
+
+  }
+
+
+  return {
+
+    id:
+      adminDoc.id,
+
+    usuario:
+      data.usuario ||
+      cleanUsername,
+
+    nombre:
+      data.nombre ||
+      data.usuario ||
+      cleanUsername,
+
+    canReset:
+      data.canReset === true
+
+  };
+
+}
+
+
+async function uploadPersonPhoto(
+  collectionName,
+  personId,
+  file
+) {
+
+  if (!file) {
+    return "";
+  }
+
+
+  if (
+    file.size >
+    5 * 1024 * 1024
+  ) {
+
+    throw new Error(
+      "La foto no puede superar 5 MB."
+    );
+
+  }
+
+
+  if (
+    !file.type?.startsWith(
+      "image/"
+    )
+  ) {
+
+    throw new Error(
+      "El archivo seleccionado no es una imagen."
+    );
+
+  }
+
+
+  const safeName =
+    file.name.replace(
+      /[^a-zA-Z0-9._-]/g,
+      "_"
+    );
+
+
+  const photoRef =
+    ref(
+      storage,
+      `people/${collectionName}/${personId}/${Date.now()}_${safeName}`
+    );
+
+
+  await uploadBytes(
+    photoRef,
+    file
+  );
+
+
+  return await getDownloadURL(
+    photoRef
+  );
+
+}
+
+
+function photoUrlWithCache(
+  url,
+  person
+) {
+
+  if (!url) {
+    return "";
+  }
+
+
+  const separator =
+    url.includes("?")
+      ? "&"
+      : "?";
+
+
+  const version =
+    person.updatedAt?.seconds ||
+    Date.now();
+
+
+  return (
+    `${url}${separator}v=${version}`
+  );
+
+}
+
+
+function renderRanking(
+  tableIndex
+) {
+
+  const body =
+    rankingBodies[
+    tableIndex
+    ];
+
+
+  if (!body) {
+    return;
+  }
+
+
+  const people =
+    rankingPeople[
+    tableIndex
+    ] || [];
+
+
+  body.innerHTML =
+    "";
+
+
+  if (!people.length) {
+
+    body.innerHTML = `
+
+      <tr>
+
+        <td
+          colspan="2"
+          class="empty">
+
+          Todavía no hay personas.
+
+        </td>
+
+      </tr>
+
+    `;
+
+  } else {
+
+    people.forEach(
+      (
+        person,
+        index
+      ) => {
+
+        const fragment =
+          document.importNode(
+            els.rowTemplate.content,
+            true
+          );
+
+
+        const position =
+          fragment.querySelector(
+            ".position-cell"
+          );
+
+
+        const name =
+          fragment.querySelector(
+            ".person-name"
+          );
+
+
+        const image =
+          fragment.querySelector(
+            ".avatar"
+          );
+
+
+        const fallback =
+          fragment.querySelector(
+            ".avatar-fallback"
+          );
+
+
+        const addButton =
+          fragment.querySelector(
+            ".add-money-btn"
+          );
+
+
+        if (position) {
+
+          position.textContent =
+            `#${index + 1}`;
+
+        }
+
+
+        if (name) {
+
+          name.textContent =
+            person.name ||
+            "Sin nombre";
+
+
+          /*
+            Aquí está el cambio importante:
+            el dinero aparece al lado del nombre
+            solamente cuando el botón "Dinero"
+            está activado.
+          */
+
+          if (
+            showMoneyInRankings
+          ) {
+
+            const money =
+              document.createElement(
+                "span"
+              );
+
+
+            money.className =
+              "person-money";
+
+
+            money.textContent =
+              ` ${formatMoney(
+                person.money
+              )}`;
+
+
+            name.appendChild(
+              money
+            );
+
+          }
+
+        }
+
+
+        if (
+          image &&
+          fallback
+        ) {
+
+          if (
+            person.photoURL
+          ) {
+
+            image.src =
+              photoUrlWithCache(
+                person.photoURL,
+                person
+              );
+
+
+            image.alt =
+              person.name ||
+              "Foto";
+
+
+            image.hidden =
+              false;
+
+
+            fallback.hidden =
+              true;
+
+          } else {
+
+            image.hidden =
+              true;
+
+
+            fallback.hidden =
+              false;
+
+          }
+
+        }
+
+
+        if (addButton) {
+
+          addButton.classList.toggle(
+            "hidden",
+            !isAdmin()
+          );
+
+
+          addButton.onclick =
+            event => {
+
+              event.preventDefault();
+
+              event.stopPropagation();
+
+              openMoneyDialog(
+                person,
+                tableIndex
+              );
+
+            };
+
+        }
+
+
+        body.appendChild(
+          fragment
+        );
 
       }
     );
 
-  unsubscribeRankings = [];
+  }
+
+
+  if (isAdmin()) {
+
+    const row =
+      document.createElement(
+        "tr"
+      );
+
+
+    row.innerHTML = `
+
+      <td colspan="2">
+
+        <button
+          class="primary-btn"
+          type="button">
+
+          + Añadir persona
+
+        </button>
+
+      </td>
+
+    `;
+
+
+    row
+      .querySelector(
+        "button"
+      )
+      ?.addEventListener(
+        "click",
+        () => {
+
+          openAddPersonDialog(
+            tableIndex
+          );
+
+        }
+      );
+
+
+    body.appendChild(
+      row
+    );
+
+  }
+
+}
+
+
+function renderAllRankings() {
+
+  renderRanking(0);
+
+  renderRanking(1);
+
+  renderRanking(2);
+
+  renderRanking(3);
+
+}
+
+
+function subscribeAllRankings() {
+
+  unsubscribeRankings.forEach(
+    unsubscribe => {
+
+      try {
+
+        unsubscribe();
+
+      } catch (_) { }
+
+    }
+  );
+
+
+  unsubscribeRankings =
+    [];
+
 
   subscribeNormalRanking(
     "20 Bolsas",
     0
   );
 
+
   subscribeNormalRanking(
     "16 Bolsas",
     1
   );
+
 
   subscribeNormalRanking(
     "12 Bolsas",
     2
   );
 
+
   subscribe68Ranking();
+
 }
 
 
@@ -753,22 +1086,32 @@ function subscribeNormalRanking(
 ) {
 
   const body =
-    rankingBodies[tableIndex];
+    rankingBodies[
+    tableIndex
+    ];
+
 
   if (!body) {
     return;
   }
 
+
   body.innerHTML = `
 
     <tr>
+
       <td
         colspan="2"
         class="empty">
+
         Cargando…
+
       </td>
+
     </tr>
+
   `;
+
 
   const peopleRef =
     collection(
@@ -778,6 +1121,7 @@ function subscribeNormalRanking(
       "people"
     );
 
+
   const unsubscribe =
     onSnapshot(
 
@@ -785,25 +1129,31 @@ function subscribeNormalRanking(
 
       snapshot => {
 
-        rankingPeople[tableIndex] =
-          snapshot.docs.map(
-            document => ({
+        rankingPeople[
+          tableIndex
+        ] =
+          snapshot.docs
+            .map(
+              personDoc => ({
 
-              id: document.id,
+                id:
+                  personDoc.id,
 
-              tableName,
+                tableName,
 
-              ...document.data()
+                ...personDoc.data()
 
-            })
-          );
+              })
+            )
+            .sort(
+              sortByMoney
+            );
 
-        rankingPeople[tableIndex]
-          .sort(sortByMoney);
 
         renderRanking(
           tableIndex
         );
+
       },
 
       error => {
@@ -813,60 +1163,67 @@ function subscribeNormalRanking(
           error
         );
 
+
         body.innerHTML = `
 
           <tr>
+
             <td
               colspan="2"
               class="empty">
+
               No se pudo cargar.
+
             </td>
+
           </tr>
+
         `;
+
       }
+
     );
+
 
   unsubscribeRankings.push(
     unsubscribe
   );
+
 }
 
-
-/* =========================================================
-   GRUPO 6 / 8
-   ========================================================= */
 
 function subscribe68Ranking() {
 
   const body =
     $("rankingBody68");
 
+
   if (!body) {
     return;
   }
 
-  body.innerHTML = `
-
-    <tr>
-      <td
-        colspan="2"
-        class="empty">
-        Cargando…
-      </td>
-    </tr>
-  `;
 
   const sources = [
+
     "6_8",
+
     "6 Bolsas",
+
     "8 Bolsas"
+
   ];
 
+
   const sourceData = {
+
     "6_8": [],
+
     "6 Bolsas": [],
+
     "8 Bolsas": []
+
   };
+
 
   sources.forEach(
     sourceName => {
@@ -879,6 +1236,7 @@ function subscribe68Ranking() {
           "people"
         );
 
+
       const unsubscribe =
         onSnapshot(
 
@@ -886,22 +1244,25 @@ function subscribe68Ranking() {
 
           snapshot => {
 
-            sourceData[sourceName] =
+            sourceData[
+              sourceName
+            ] =
               snapshot.docs.map(
-                document => ({
+                d => ({
 
                   id:
-                    document.id,
+                    d.id,
 
                   tableName:
                     sourceName,
 
-                  ...document.data()
+                  ...d.data()
 
                 })
               );
 
-            const merged = [
+
+            rankingPeople[3] = [
 
               ...sourceData["6_8"],
 
@@ -909,16 +1270,13 @@ function subscribe68Ranking() {
 
               ...sourceData["8 Bolsas"]
 
-            ];
-
-            merged.sort(
+            ].sort(
               sortByMoney
             );
 
-            rankingPeople[3] =
-              merged;
 
             renderRanking(3);
+
           },
 
           error => {
@@ -927,215 +1285,21 @@ function subscribe68Ranking() {
               `Error en grupo 6 / 8 (${sourceName}):`,
               error
             );
+
           }
+
         );
+
 
       unsubscribeRankings.push(
         unsubscribe
       );
+
     }
   );
+
 }
 
-
-/* =========================================================
-   RENDER RANKING
-   ========================================================= */
-
-function renderRanking(
-  tableIndex
-) {
-
-  const body =
-    rankingBodies[tableIndex];
-
-  if (!body) {
-    return;
-  }
-
-  const people =
-    rankingPeople[tableIndex] || [];
-
-  body.innerHTML = "";
-
-  if (!people.length) {
-
-    body.innerHTML = `
-
-      <tr>
-        <td
-          colspan="2"
-          class="empty">
-          Todavía no hay personas.
-        </td>
-      </tr>
-    `;
-
-  } else {
-
-    people.forEach(
-      (
-        person,
-        index
-      ) => {
-
-        if (!els.rowTemplate) {
-          return;
-        }
-
-        const fragment =
-          document.importNode(
-            els.rowTemplate.content,
-            true
-          );
-
-        const positionCell =
-          fragment.querySelector(
-            ".position-cell"
-          );
-
-        const nameElement =
-          fragment.querySelector(
-            ".person-name"
-          );
-
-        const image =
-          fragment.querySelector(
-            ".avatar"
-          );
-
-        const fallback =
-          fragment.querySelector(
-            ".avatar-fallback"
-          );
-
-        const addButton =
-          fragment.querySelector(
-            ".add-money-btn"
-          );
-
-        if (positionCell) {
-
-          positionCell.textContent =
-            `#${index + 1}`;
-        }
-
-        if (nameElement) {
-
-          nameElement.textContent =
-            person.name ||
-            "Sin nombre";
-        }
-
-        if (
-          image &&
-          fallback
-        ) {
-
-          if (person.photoURL) {
-
-            image.src =
-              person.photoURL;
-
-            image.alt =
-              person.name ||
-              "Foto";
-
-            image.hidden =
-              false;
-
-            fallback.hidden =
-              true;
-
-          } else {
-
-            image.hidden =
-              true;
-
-            fallback.hidden =
-              false;
-          }
-        }
-
-        if (addButton) {
-
-          addButton.classList.toggle(
-            "hidden",
-            !isAdmin()
-          );
-
-          addButton.addEventListener(
-            "click",
-            () => {
-
-              openMoneyDialog(
-                person,
-                tableIndex
-              );
-            }
-          );
-        }
-
-        body.appendChild(
-          fragment
-        );
-      }
-    );
-  }
-
-  if (isAdmin()) {
-
-    const addRow =
-      document.createElement(
-        "tr"
-      );
-
-    addRow.innerHTML = `
-
-      <td colspan="2">
-
-        <button
-          class="primary-btn"
-          type="button">
-          + Añadir persona
-        </button>
-
-      </td>
-    `;
-
-    const button =
-      addRow.querySelector(
-        "button"
-      );
-
-    button.addEventListener(
-      "click",
-      () => {
-
-        openAddPersonDialog(
-          tableIndex
-        );
-      }
-    );
-
-    body.appendChild(
-      addRow
-    );
-  }
-}
-
-function renderAllRankings() {
-
-  renderRanking(0);
-  renderRanking(1);
-  renderRanking(2);
-  renderRanking(3);
-}
-
-
-/* =========================================================
-   AÑADIR PERSONA
-   ========================================================= */
 
 function openAddPersonDialog(
   tableIndex
@@ -1145,245 +1309,45 @@ function openAddPersonDialog(
     return;
   }
 
+
   currentAddPersonTable =
     tableIndex;
+
 
   showError(
     els.addPersonMessage,
     ""
   );
 
+
   if (els.personName) {
-    els.personName.value = "";
+
+    els.personName.value =
+      "";
+
   }
+
 
   if (els.initialMoney) {
-    els.initialMoney.value = "0";
+
+    els.initialMoney.value =
+      "0";
+
   }
+
 
   if (els.personPhoto) {
-    els.personPhoto.value = "";
+
+    els.personPhoto.value =
+      "";
+
   }
 
-  if (
-    els.addPersonDialog &&
-    typeof els.addPersonDialog.showModal ===
-      "function"
-  ) {
 
-    els.addPersonDialog.showModal();
-  }
+  els.addPersonDialog?.showModal();
+
 }
 
-
-/* =========================================================
-   SUBIR FOTO
-   ========================================================= */
-
-async function uploadPersonPhoto(
-  collectionName,
-  personId,
-  file
-) {
-
-  if (!file) {
-    return "";
-  }
-
-  if (
-    file.size >
-    5 * 1024 * 1024
-  ) {
-
-    throw new Error(
-      "La foto no puede superar 5 MB."
-    );
-  }
-
-  if (
-    !file.type ||
-    !file.type.startsWith("image/")
-  ) {
-
-    throw new Error(
-      "El archivo seleccionado no es una imagen."
-    );
-  }
-
-  const safeName =
-    file.name.replace(
-      /[^a-zA-Z0-9._-]/g,
-      "_"
-    );
-
-  const photoRef =
-    ref(
-      storage,
-      `people/${collectionName}/${personId}/${Date.now()}_${safeName}`
-    );
-
-  await uploadBytes(
-    photoRef,
-    file
-  );
-
-  return await getDownloadURL(
-    photoRef
-  );
-}
-
-
-/* =========================================================
-   AÑADIR PERSONA
-   ========================================================= */
-
-if (els.addPersonForm) {
-
-  els.addPersonForm.addEventListener(
-    "submit",
-    async event => {
-
-      event.preventDefault();
-
-      showError(
-        els.addPersonMessage,
-        ""
-      );
-
-      if (!isAdmin()) {
-
-        showError(
-          els.addPersonMessage,
-          "No tienes permisos de administrador."
-        );
-
-        return;
-      }
-
-      if (
-        currentAddPersonTable === null
-      ) {
-
-        showError(
-          els.addPersonMessage,
-          "No se ha seleccionado un ranking."
-        );
-
-        return;
-      }
-
-      const name =
-        els.personName?.value.trim() ||
-        "";
-
-      const money =
-        Number(
-          els.initialMoney?.value
-        );
-
-      const file =
-        els.personPhoto
-          ?.files?.[0];
-
-      if (!name) {
-
-        showError(
-          els.addPersonMessage,
-          "Escribe un nombre."
-        );
-
-        return;
-      }
-
-      if (
-        !Number.isFinite(money) ||
-        money < 0
-      ) {
-
-        showError(
-          els.addPersonMessage,
-          "El dinero no puede ser negativo."
-        );
-
-        return;
-      }
-
-      try {
-
-        const collectionName =
-          currentAddPersonTable === 3
-            ? "6_8"
-            : TABLES[
-                currentAddPersonTable
-              ];
-
-        const peopleRef =
-          collection(
-            db,
-            "tables",
-            collectionName,
-            "people"
-          );
-
-        const newPersonRef =
-          doc(peopleRef);
-
-        let photoURL = "";
-
-        if (file) {
-
-          photoURL =
-            await uploadPersonPhoto(
-              collectionName,
-              newPersonRef.id,
-              file
-            );
-        }
-
-        await setDoc(
-          newPersonRef,
-          {
-            name,
-            money,
-            photoURL,
-            createdAt:
-              serverTimestamp(),
-            updatedAt:
-              serverTimestamp()
-          }
-        );
-
-        if (
-          els.addPersonDialog &&
-          els.addPersonDialog.open
-        ) {
-
-          els.addPersonDialog.close();
-        }
-
-        currentAddPersonTable =
-          null;
-
-      } catch (error) {
-
-        console.error(
-          "Error añadiendo persona:",
-          error
-        );
-
-        showError(
-          els.addPersonMessage,
-          firebaseErrorMessage(error)
-        );
-      }
-    }
-  );
-}
-
-
-/* =========================================================
-   AÑADIR DINERO
-   ========================================================= */
 
 function openMoneyDialog(
   person,
@@ -1394,97 +1358,67 @@ function openMoneyDialog(
     return;
   }
 
+
   currentMoneyPerson =
     person;
 
+
   currentMoneyTable =
     tableIndex;
+
 
   currentMoneyCollection =
     person.tableName ||
     (
       tableIndex === 3
         ? "6_8"
-        : TABLES[tableIndex]
+        : TABLES[
+        tableIndex
+        ]
     );
+
 
   if (els.moneyTitle) {
 
     els.moneyTitle.textContent =
-      `Añadir dinero a ${
-        person.name || "esta persona"
+      `Añadir dinero a ${person.name ||
+      "esta persona"
       }`;
+
   }
 
+
   if (els.moneyAmount) {
-    els.moneyAmount.value = "";
+
+    els.moneyAmount.value =
+      "";
+
   }
+
 
   showError(
     els.moneyMessage,
     ""
   );
 
-  addEditButtonToMoneyDialog();
 
-  if (
-    els.moneyDialog &&
-    typeof els.moneyDialog.showModal ===
-      "function"
-  ) {
+  /*
+    IMPORTANTE:
+    NO creamos otro botón aquí.
 
-    els.moneyDialog.showModal();
-  }
-}
+    El botón "Editar persona"
+    ya existe en el HTML.
+  */
 
-
-function addEditButtonToMoneyDialog() {
-
-  if (!els.moneyForm) {
-    return;
-  }
-
-  let button =
-    $("editPersonFromMoneyBtn");
-
-  if (button) {
-    return;
-  }
-
-  button =
-    document.createElement("button");
-
-  button.id =
-    "editPersonFromMoneyBtn";
-
-  button.type =
-    "button";
-
-  button.className =
-    "secondary-btn";
-
-  button.textContent =
-    "Editar persona";
-
-  els.moneyForm.insertBefore(
-    button,
-    els.moneyMessage
+  els.editPersonBtn?.classList.remove(
+    "hidden"
   );
 
-  button.addEventListener(
-    "click",
-    () => {
 
-      openEditPersonDialog();
+  els.moneyDialog?.showModal();
 
-    }
-  );
 }
 
-
-/* =========================================================
-   EDITAR PERSONA
-   ========================================================= */
 
 function openEditPersonDialog() {
 
@@ -1496,26 +1430,49 @@ function openEditPersonDialog() {
     return;
   }
 
-  createEditDialog();
 
   currentEditPerson =
     currentMoneyPerson;
 
+
   currentEditCollection =
     currentMoneyCollection;
 
-  $("editPersonName").value =
-    currentEditPerson.name || "";
 
-  $("editPersonPhoto").value =
-    "";
+  if (els.editPersonName) {
+
+    els.editPersonName.value =
+      currentEditPerson.name ||
+      "";
+
+  }
+
+
+  if (els.editPersonPhoto) {
+
+    els.editPersonPhoto.value =
+      "";
+
+  }
+
 
   showError(
-    $("editPersonMessage"),
+    els.editPersonMessage,
     ""
   );
 
-  $("editPersonDialog").showModal();
+
+  if (
+    els.moneyDialog?.open
+  ) {
+
+    els.moneyDialog.close();
+
+  }
+
+
+  els.editPersonDialog?.showModal();
+
 }
 
 
@@ -1525,6 +1482,7 @@ async function saveEditedPerson(
 
   event.preventDefault();
 
+
   if (
     !isAdmin() ||
     !currentEditPerson ||
@@ -1532,44 +1490,56 @@ async function saveEditedPerson(
   ) {
 
     return;
+
   }
 
+
   const name =
-    $("editPersonName")
-      .value
-      .trim();
+    els.editPersonName
+      ?.value
+      .trim() ||
+    "";
+
 
   const file =
-    $("editPersonPhoto")
-      .files?.[0];
+    els.editPersonPhoto
+      ?.files?.[0];
 
-  const message =
-    $("editPersonMessage");
-
-  const saveButton =
-    $("saveEditPerson");
 
   if (!name) {
 
     showError(
-      message,
+      els.editPersonMessage,
       "Escribe un nombre."
     );
 
     return;
+
   }
 
-  saveButton.disabled =
-    true;
 
-  saveButton.textContent =
-    "Guardando…";
+  if (els.saveEditPersonBtn) {
+
+    els.saveEditPersonBtn.disabled =
+      true;
+
+    els.saveEditPersonBtn.textContent =
+      "Guardando…";
+
+  }
+
 
   try {
 
     let photoURL =
       currentEditPerson.photoURL ||
       "";
+
+
+    /*
+      Si se selecciona una nueva foto,
+      se sube una nueva imagen.
+    */
 
     if (file) {
 
@@ -1579,7 +1549,19 @@ async function saveEditedPerson(
           currentEditPerson.id,
           file
         );
+
     }
+
+
+    const newUpdatedAt = {
+
+      seconds:
+        Math.floor(
+          Date.now() / 1000
+        )
+
+    };
+
 
     await updateDoc(
 
@@ -1592,20 +1574,110 @@ async function saveEditedPerson(
       ),
 
       {
+
         name,
+
         photoURL,
+
         updatedAt:
           serverTimestamp()
+
       }
+
     );
+
+
+    /*
+      Actualización inmediata.
+      No esperamos al onSnapshot.
+    */
 
     currentEditPerson.name =
       name;
 
+
     currentEditPerson.photoURL =
       photoURL;
 
-    $("editPersonDialog").close();
+
+    currentEditPerson.updatedAt =
+      newUpdatedAt;
+
+
+    rankingPeople.forEach(
+      people => {
+
+        const found =
+          people.find(
+            person =>
+              person.id ===
+              currentEditPerson.id &&
+              person.tableName ===
+              currentEditPerson.tableName
+          );
+
+
+        if (found) {
+
+          found.name =
+            name;
+
+          found.photoURL =
+            photoURL;
+
+          found.updatedAt =
+            newUpdatedAt;
+
+        }
+
+      }
+    );
+
+
+    /*
+      Repinta inmediatamente el ranking.
+    */
+
+    renderAllRankings();
+
+
+    /*
+      Cerramos edición.
+    */
+
+    els.editPersonDialog?.close();
+
+
+    /*
+      Volvemos a la ventana de dinero
+      con el nombre actualizado.
+    */
+
+    if (currentMoneyPerson) {
+
+      currentMoneyPerson =
+        currentEditPerson;
+
+
+      if (els.moneyTitle) {
+
+        els.moneyTitle.textContent =
+          `Añadir dinero a ${currentEditPerson.name
+          }`;
+
+      }
+
+
+      els.moneyDialog?.showModal();
+
+    }
+
+
+    showError(
+      els.editPersonMessage,
+      ""
+    );
+
 
   } catch (error) {
 
@@ -1614,431 +1686,203 @@ async function saveEditedPerson(
       error
     );
 
+
     showError(
-      message,
+      els.editPersonMessage,
       firebaseErrorMessage(error)
     );
+
 
   } finally {
 
-    saveButton.disabled =
-      false;
+    if (els.saveEditPersonBtn) {
 
-    saveButton.textContent =
-      "Guardar cambios";
-  }
-}
+      els.saveEditPersonBtn.disabled =
+        false;
 
+      els.saveEditPersonBtn.textContent =
+        "Guardar cambios";
 
-/* =========================================================
-   DINERO DE TODO EL MUNDO
-   ========================================================= */
+    }
 
-async function openMoneyOverview() {
-
-  if (!isAdmin()) {
-    return;
   }
 
-  createMoneyOverviewDialog();
-
-  const dialog =
-    $("moneyOverviewDialog");
-
-  dialog.showModal();
-
-  const body =
-    $("moneyOverviewBody");
-
-  const totalElement =
-    $("moneyOverviewTotal");
-
-  const message =
-    $("moneyOverviewMessage");
-
-  body.innerHTML = `
-
-    <tr>
-      <td
-        colspan="4"
-        class="empty">
-        Cargando…
-      </td>
-    </tr>
-  `;
-
-  showError(
-    message,
-    ""
-  );
-
-  try {
-
-    const results =
-      await Promise.all(
-
-        ALL_COLLECTIONS.map(
-          async collectionName => {
-
-            const peopleRef =
-              collection(
-                db,
-                "tables",
-                collectionName,
-                "people"
-              );
-
-            const snapshot =
-              await getDocs(
-                peopleRef
-              );
-
-            return snapshot.docs.map(
-              personDoc => ({
-
-                id:
-                  personDoc.id,
-
-                collectionName,
-
-                ...personDoc.data()
-
-              })
-            );
-          }
-        )
-      );
-
-    const everyone =
-      results
-        .flat()
-        .sort(sortByMoney);
-
-    const total =
-      everyone.reduce(
-        (sum, person) =>
-          sum +
-          Number(
-            person.money || 0
-          ),
-        0
-      );
-
-    totalElement.textContent =
-      formatMoney(total);
-
-    body.innerHTML = "";
-
-    if (!everyone.length) {
-
-      body.innerHTML = `
-
-        <tr>
-          <td
-            colspan="4"
-            class="empty">
-            No hay personas.
-          </td>
-        </tr>
-      `;
-
-      return;
-    }
-
-    everyone.forEach(
-      (
-        person,
-        index
-      ) => {
-
-        const row =
-          document.createElement(
-            "tr"
-          );
-
-        row.innerHTML = `
-
-          <td>
-            #${index + 1}
-          </td>
-
-          <td>
-            ${escapeHtml(
-              person.name ||
-              "Sin nombre"
-            )}
-          </td>
-
-          <td>
-            ${escapeHtml(
-              displayGroupName(
-                person.collectionName
-              )
-            )}
-          </td>
-
-          <td class="money-value">
-            ${formatMoney(
-              person.money
-            )}
-          </td>
-        `;
-
-        body.appendChild(
-          row
-        );
-      }
-    );
-
-  } catch (error) {
-
-    console.error(
-      "Error mostrando dinero:",
-      error
-    );
-
-    body.innerHTML = `
-
-      <tr>
-        <td
-          colspan="4"
-          class="empty">
-          No se pudo cargar el dinero.
-        </td>
-      </tr>
-    `;
-
-    showError(
-      message,
-      firebaseErrorMessage(error)
-    );
-  }
 }
 
 
-/* =========================================================
-   LOGIN HOTSPOT
-   ========================================================= */
+if (els.addPersonForm) {
 
-if (els.loginHotspot) {
-
-  els.loginHotspot.addEventListener(
-    "click",
-    () => {
-
-      if (isAdmin()) {
-        return;
-      }
-
-      showError(
-        els.authMessage,
-        ""
-      );
-
-      if (els.username) {
-        els.username.value = "";
-      }
-
-      if (els.password) {
-        els.password.value = "";
-      }
-
-      if (
-        els.authDialog &&
-        typeof els.authDialog.showModal ===
-          "function"
-      ) {
-
-        els.authDialog.showModal();
-      }
-    }
-  );
-}
-
-
-/* =========================================================
-   CERRAR LOGIN
-   ========================================================= */
-
-if (els.closeAuth) {
-
-  els.closeAuth.addEventListener(
-    "click",
-    () => {
-
-      if (
-        els.authDialog &&
-        els.authDialog.open
-      ) {
-
-        els.authDialog.close();
-      }
-    }
-  );
-}
-
-
-/* =========================================================
-   CERRAR AÑADIR PERSONA
-   ========================================================= */
-
-if (els.closeAddPerson) {
-
-  els.closeAddPerson.addEventListener(
-    "click",
-    () => {
-
-      if (
-        els.addPersonDialog &&
-        els.addPersonDialog.open
-      ) {
-
-        els.addPersonDialog.close();
-      }
-    }
-  );
-}
-
-
-/* =========================================================
-   CERRAR DINERO
-   ========================================================= */
-
-if (els.closeMoney) {
-
-  els.closeMoney.addEventListener(
-    "click",
-    () => {
-
-      if (
-        els.moneyDialog &&
-        els.moneyDialog.open
-      ) {
-
-        els.moneyDialog.close();
-      }
-
-      currentMoneyPerson = null;
-      currentMoneyTable = null;
-      currentMoneyCollection = null;
-    }
-  );
-}
-
-
-/* =========================================================
-   FORMULARIO LOGIN
-   ========================================================= */
-
-if (els.authForm) {
-
-  els.authForm.addEventListener(
+  els.addPersonForm.addEventListener(
     "submit",
     async event => {
 
       event.preventDefault();
 
+
       showError(
-        els.authMessage,
+        els.addPersonMessage,
         ""
       );
 
-      const username =
-        els.username?.value.trim() ||
-        "";
 
-      const password =
-        els.password?.value ||
-        "";
-
-      if (!username) {
+      if (!isAdmin()) {
 
         showError(
-          els.authMessage,
-          "Introduce el usuario."
+          els.addPersonMessage,
+          "No tienes permisos de administrador."
         );
 
         return;
+
       }
 
-      if (!password) {
+
+      if (
+        currentAddPersonTable ===
+        null
+      ) {
 
         showError(
-          els.authMessage,
-          "Introduce la contraseña."
+          els.addPersonMessage,
+          "No se ha seleccionado un ranking."
         );
 
         return;
+
       }
 
-      els.authSubmit.disabled =
-        true;
 
-      els.authSubmit.textContent =
-        "Comprobando…";
+      const name =
+        els.personName
+          ?.value
+          .trim() ||
+        "";
+
+
+      const money =
+        Number(
+          els.initialMoney?.value
+        );
+
+
+      const file =
+        els.personPhoto
+          ?.files?.[0];
+
+
+      if (!name) {
+
+        showError(
+          els.addPersonMessage,
+          "Escribe un nombre."
+        );
+
+        return;
+
+      }
+
+
+      if (
+        !Number.isFinite(money) ||
+        money < 0
+      ) {
+
+        showError(
+          els.addPersonMessage,
+          "El dinero no puede ser negativo."
+        );
+
+        return;
+
+      }
+
 
       try {
 
-        const admin =
-          await loginAdmin(
-            username,
-            password
+        const collectionName =
+          currentAddPersonTable === 3
+            ? "6_8"
+            : TABLES[
+            currentAddPersonTable
+            ];
+
+
+        const peopleRef =
+          collection(
+            db,
+            "tables",
+            collectionName,
+            "people"
           );
 
-        if (!admin) {
 
-          throw new Error(
-            "Usuario o contraseña incorrectos, o la cuenta no está autorizada."
-          );
+        const newPersonRef =
+          doc(peopleRef);
+
+
+        let photoURL =
+          "";
+
+
+        if (file) {
+
+          photoURL =
+            await uploadPersonPhoto(
+              collectionName,
+              newPersonRef.id,
+              file
+            );
+
         }
 
-        currentAdmin =
-          admin;
 
-        saveSession();
+        await setDoc(
+          newPersonRef,
+          {
 
-        updateSessionUI();
+            name,
 
-        renderAllRankings();
+            money,
 
-        if (
-          els.authDialog &&
-          els.authDialog.open
-        ) {
+            photoURL,
 
-          els.authDialog.close();
-        }
+            createdAt:
+              serverTimestamp(),
 
-        els.authForm.reset();
+            updatedAt:
+              serverTimestamp()
+
+          }
+        );
+
+
+        els.addPersonDialog?.close();
+
+
+        currentAddPersonTable =
+          null;
+
 
       } catch (error) {
 
         console.error(
+          "Error añadiendo persona:",
           error
         );
 
+
         showError(
-          els.authMessage,
-          error.message ||
-          "No se pudo iniciar sesión."
+          els.addPersonMessage,
+          firebaseErrorMessage(error)
         );
 
-      } finally {
-
-        els.authSubmit.disabled =
-          false;
-
-        els.authSubmit.textContent =
-          "Entrar";
       }
+
     }
   );
+
 }
 
-
-/* =========================================================
-   FORMULARIO DINERO
-   ========================================================= */
 
 if (els.moneyForm) {
 
@@ -2048,15 +1892,18 @@ if (els.moneyForm) {
 
       event.preventDefault();
 
+
       showError(
         els.moneyMessage,
         ""
       );
 
+
       if (
         !isAdmin() ||
         !currentMoneyPerson ||
-        currentMoneyTable === null
+        currentMoneyTable ===
+        null
       ) {
 
         showError(
@@ -2065,12 +1912,15 @@ if (els.moneyForm) {
         );
 
         return;
+
       }
+
 
       const amount =
         Number(
           els.moneyAmount?.value
         );
+
 
       if (
         !Number.isFinite(amount) ||
@@ -2083,7 +1933,9 @@ if (els.moneyForm) {
         );
 
         return;
+
       }
+
 
       try {
 
@@ -2098,141 +1950,508 @@ if (els.moneyForm) {
           ),
 
           {
+
             money:
               increment(amount),
 
             updatedAt:
               serverTimestamp()
+
+          }
+
+        );
+
+
+        /*
+          Actualización inmediata.
+        */
+
+        currentMoneyPerson.money =
+          Number(
+            currentMoneyPerson.money ||
+            0
+          ) + amount;
+
+
+        rankingPeople.forEach(
+          people => {
+
+            const found =
+              people.find(
+                person =>
+                  person.id ===
+                  currentMoneyPerson.id &&
+                  person.tableName ===
+                  currentMoneyPerson.tableName
+              );
+
+
+            if (found) {
+
+              found.money =
+                Number(
+                  found.money || 0
+                ) + amount;
+
+            }
+
           }
         );
 
-        if (
-          els.moneyDialog &&
-          els.moneyDialog.open
-        ) {
 
-          els.moneyDialog.close();
-        }
+        renderAllRankings();
 
-        currentMoneyPerson = null;
-        currentMoneyTable = null;
-        currentMoneyCollection = null;
+
+        els.moneyDialog?.close();
+
+
+        currentMoneyPerson =
+          null;
+
+        currentMoneyTable =
+          null;
+
+        currentMoneyCollection =
+          null;
+
 
       } catch (error) {
 
         console.error(
+          "Error añadiendo dinero:",
           error
         );
+
 
         showError(
           els.moneyMessage,
           firebaseErrorMessage(error)
         );
+
       }
+
     }
   );
+
 }
 
 
-/* =========================================================
-   RESET DINERO
-   ========================================================= */
+/*
+  EDITAR PERSONA
 
-if (els.carlosResetBtn) {
+  Este listener se registra UNA sola vez.
+*/
 
-  els.carlosResetBtn.addEventListener(
-    "click",
-    async () => {
+if (els.editPersonForm) {
 
-      if (
-        !isAdmin() ||
-        !canResetMoney()
-      ) {
+  els.editPersonForm.addEventListener(
+    "submit",
+    saveEditedPerson
+  );
 
-        return;
-      }
+}
 
-      const ok =
-        confirm(
-          "Esto pondrá el dinero de TODAS las personas de TODOS los grupos a 0. Los nombres y fotos se conservarán. ¿Continuar?"
+
+els.editPersonBtn?.addEventListener(
+  "click",
+  openEditPersonDialog
+);
+
+
+els.closeEditPerson?.addEventListener(
+  "click",
+  () => {
+
+    els.editPersonDialog?.close();
+
+  }
+);
+
+
+els.closeMoney?.addEventListener(
+  "click",
+  () => {
+
+    els.moneyDialog?.close();
+
+    currentMoneyPerson =
+      null;
+
+    currentMoneyTable =
+      null;
+
+    currentMoneyCollection =
+      null;
+
+  }
+);
+
+
+els.closeAddPerson?.addEventListener(
+  "click",
+  () => {
+
+    els.addPersonDialog?.close();
+
+    currentAddPersonTable =
+      null;
+
+  }
+);
+
+
+els.closeAuth?.addEventListener(
+  "click",
+  () => {
+
+    els.authDialog?.close();
+
+  }
+);
+
+
+els.loginHotspot?.addEventListener(
+  "click",
+  () => {
+
+    if (isAdmin()) {
+      return;
+    }
+
+
+    showError(
+      els.authMessage,
+      ""
+    );
+
+
+    if (els.username) {
+
+      els.username.value =
+        "";
+
+    }
+
+
+    if (els.password) {
+
+      els.password.value =
+        "";
+
+    }
+
+
+    els.authDialog?.showModal();
+
+  }
+);
+
+
+els.authForm?.addEventListener(
+  "submit",
+  async event => {
+
+    event.preventDefault();
+
+
+    showError(
+      els.authMessage,
+      ""
+    );
+
+
+    const username =
+      els.username
+        ?.value
+        .trim() ||
+      "";
+
+
+    const password =
+      els.password?.value ||
+      "";
+
+
+    if (!username) {
+
+      showError(
+        els.authMessage,
+        "Introduce el usuario."
+      );
+
+      return;
+
+    }
+
+
+    if (!password) {
+
+      showError(
+        els.authMessage,
+        "Introduce la contraseña."
+      );
+
+      return;
+
+    }
+
+
+    els.authSubmit.disabled =
+      true;
+
+
+    els.authSubmit.textContent =
+      "Comprobando…";
+
+
+    try {
+
+      const admin =
+        await loginAdmin(
+          username,
+          password
         );
 
-      if (!ok) {
-        return;
+
+      if (!admin) {
+
+        throw new Error(
+          "Usuario o contraseña incorrectos, o la cuenta no está autorizada."
+        );
+
       }
 
-      try {
 
-        for (
-          const collectionName
-          of ALL_COLLECTIONS
+      currentAdmin =
+        admin;
+
+
+      saveSession();
+
+
+      updateSessionUI();
+
+
+      els.authDialog?.close();
+
+
+      els.authForm.reset();
+
+
+    } catch (error) {
+
+      console.error(
+        error
+      );
+
+
+      showError(
+        els.authMessage,
+        error.message ||
+        "No se pudo iniciar sesión."
+      );
+
+
+    } finally {
+
+      els.authSubmit.disabled =
+        false;
+
+
+      els.authSubmit.textContent =
+        "Entrar";
+
+    }
+
+  }
+);
+
+
+/*
+  BOTÓN DINERO
+
+  Primera pulsación:
+    prueba 10.000$
+
+  Segunda pulsación:
+    prueba
+
+  Tercera:
+    prueba 10.000$
+
+  etc.
+*/
+
+els.moneyButton?.addEventListener(
+  "click",
+  () => {
+
+    if (!isAdmin()) {
+      return;
+    }
+
+
+    showMoneyInRankings =
+      !showMoneyInRankings;
+
+
+    updateMoneyButton();
+
+
+    renderAllRankings();
+
+  }
+);
+
+
+/*
+  RESET DINERO
+*/
+
+els.carlosResetBtn?.addEventListener(
+  "click",
+  async () => {
+
+    if (
+      !isAdmin() ||
+      !canResetMoney()
+    ) {
+
+      return;
+
+    }
+
+
+    const ok =
+      confirm(
+        "Esto pondrá el dinero de TODAS las personas de TODOS los grupos a 0. Los nombres y fotos se conservarán. ¿Continuar?"
+      );
+
+
+    if (!ok) {
+      return;
+    }
+
+
+    try {
+
+      for (
+        const collectionName
+        of ALL_COLLECTIONS
+      ) {
+
+        const peopleRef =
+          collection(
+            db,
+            "tables",
+            collectionName,
+            "people"
+          );
+
+
+        const snapshot =
+          await getDocs(
+            peopleRef
+          );
+
+
+        if (
+          snapshot.empty
         ) {
 
-          const peopleRef =
-            collection(
-              db,
-              "tables",
-              collectionName,
-              "people"
+          continue;
+
+        }
+
+
+        const batch =
+          writeBatch(db);
+
+
+        snapshot.forEach(
+          personDoc => {
+
+            batch.update(
+              personDoc.ref,
+              {
+
+                money:
+                  0,
+
+                updatedAt:
+                  serverTimestamp()
+
+              }
             );
 
-          const snapshot =
-            await getDocs(
-              peopleRef
-            );
-
-          if (snapshot.empty) {
-            continue;
           }
+        );
 
-          const batch =
-            writeBatch(db);
 
-          snapshot.forEach(
-            personDoc => {
+        await batch.commit();
 
-              batch.update(
-                personDoc.ref,
-                {
-                  money: 0,
-                  updatedAt:
-                    serverTimestamp()
-                }
-              );
+      }
+
+
+      rankingPeople.forEach(
+        people => {
+
+          people.forEach(
+            person => {
+
+              person.money =
+                0;
+
             }
           );
 
-          await batch.commit();
         }
+      );
 
-        alert(
-          "Dinero reseteado correctamente."
-        );
 
-      } catch (error) {
+      renderAllRankings();
 
-        console.error(
-          error
-        );
 
-        alert(
-          firebaseErrorMessage(error)
-        );
-      }
+      alert(
+        "Dinero reseteado correctamente."
+      );
+
+
+    } catch (error) {
+
+      console.error(
+        error
+      );
+
+
+      alert(
+        firebaseErrorMessage(error)
+      );
+
     }
-  );
-}
+
+  }
+);
 
 
-/* =========================================================
-   INICIO
-   ========================================================= */
+/*
+  Cerrar ventana de dinero de todos,
+  por si se utiliza en el futuro.
+*/
 
-createMoneyButton();
+els.closeMoneyOverview?.addEventListener(
+  "click",
+  () => {
 
-createEditDialog();
+    els.moneyOverviewDialog?.close();
 
-createMoneyOverviewDialog();
+  }
+);
+
+
+/*
+  INICIO
+*/
 
 loadSession();
 
