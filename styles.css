@@ -1,37 +1,22 @@
 :root {
-
   --bg: #000000;
+  --surface: rgba(5, 5, 5, .92);
+  --surface-2: #101010;
 
-  --surface:
-    rgba(5, 5, 5, .92);
+  --text: #ffffff;
+  --muted: #a1a1aa;
 
-  --surface-2:
-    #101010;
+  --line: #292929;
 
-  --text:
-    #ffffff;
+  --accent: #ffffff;
+  --accent-2: #d4d4d8;
 
-  --muted:
-    #a1a1aa;
-
-  --line:
-    #292929;
-
-  --accent:
-    #ffffff;
-
-  --accent-2:
-    #d4d4d8;
-
-  --danger:
-    #ef4444;
+  --danger: #ef4444;
 
   --shadow:
-    0 20px 50px
-    rgba(0, 0, 0, .65);
+    0 20px 50px rgba(0, 0, 0, .65);
 
-  --radius:
-    22px;
+  --radius: 22px;
 }
 
 
@@ -46,7 +31,6 @@ html {
 
 
 body {
-
   margin: 0;
 
   min-height: 100vh;
@@ -68,15 +52,13 @@ body {
     fixed
     no-repeat;
 
-  color:
-    var(--text);
+  color: var(--text);
 
   position: relative;
 }
 
 
 body::before {
-
   content: "";
 
   position: fixed;
@@ -104,67 +86,50 @@ button {
 
 
 .hidden {
-  display:
-    none !important;
+  display: none !important;
 }
 
 
-/* =========================================================
-   LOGIN HOTSPOT
-   ========================================================= */
+/* =====================================================
+   LOGIN OCULTO
+   ===================================================== */
 
 .login-hotspot {
-
-  position:
-    fixed;
+  position: fixed;
 
   top: 0;
   right: 0;
 
-  width:
-    42px;
+  width: 42px;
+  height: 42px;
 
-  height:
-    42px;
+  border: 0;
 
-  border:
-    0;
+  background: transparent;
 
-  background:
-    transparent;
-
-  z-index:
-    50;
+  z-index: 50;
 }
 
 
-/* =========================================================
+/* =====================================================
    TOPBAR
-   ========================================================= */
+   ===================================================== */
 
 .topbar {
+  min-height: 84px;
 
-  min-height:
-    84px;
+  display: flex;
 
-  display:
-    flex;
+  align-items: center;
 
-  align-items:
-    center;
+  justify-content: space-between;
 
-  justify-content:
-    space-between;
+  gap: 20px;
 
-  gap:
-    20px;
-
-  padding:
-    14px 34px;
+  padding: 14px 34px;
 
   border-bottom:
-    1px solid
-    rgba(255, 255, 255, .12);
+    1px solid rgba(255, 255, 255, .12);
 
   background:
     rgba(0, 0, 0, .82);
@@ -172,309 +137,230 @@ button {
   backdrop-filter:
     blur(16px);
 
-  position:
-    sticky;
+  position: sticky;
 
-  top:
-    0;
+  top: 0;
 
-  z-index:
-    20;
+  z-index: 20;
 }
 
 
 .brand {
+  display: flex;
 
-  display:
-    flex;
+  align-items: center;
 
-  align-items:
-    center;
+  gap: 12px;
 
-  gap:
-    12px;
-
-  min-width:
-    0;
+  min-width: 0;
 }
 
 
 .brand-dot {
+  width: 12px;
+  height: 12px;
 
-  width:
-    12px;
+  flex: 0 0 auto;
 
-  height:
-    12px;
+  border-radius: 50%;
 
-  flex:
-    0 0 auto;
-
-  border-radius:
-    50%;
-
-  background:
-    #fff;
+  background: #fff;
 
   box-shadow:
-    0 0 15px
-    rgba(255, 255, 255, .5);
+    0 0 15px rgba(255, 255, 255, .5);
 }
 
 
 .brand h1 {
+  margin: 0;
 
-  margin:
-    0;
+  font-size: 17px;
 
-  font-size:
-    17px;
+  letter-spacing: -.02em;
 
-  letter-spacing:
-    -.02em;
-
-  color:
-    #fff;
+  color: #fff;
 }
 
 
 .brand p {
+  margin: 3px 0 0;
 
-  margin:
-    3px 0 0;
+  color: var(--muted);
 
-  color:
-    var(--muted);
-
-  font-size:
-    12px;
+  font-size: 12px;
 }
 
 
 .top-actions {
+  display: flex;
 
-  display:
-    flex;
+  gap: 10px;
 
-  gap:
-    10px;
+  align-items: center;
 
-  align-items:
-    center;
+  justify-content: flex-end;
 
-  justify-content:
-    flex-end;
-
-  flex-wrap:
-    wrap;
+  flex-wrap: wrap;
 }
 
 
-/* =========================================================
+/* =====================================================
+   SESIÓN
+   ===================================================== */
+
+.session-chip {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  background: #080808;
+
+  border:
+    1px solid var(--line);
+
+  border-radius: 999px;
+
+  padding:
+    7px 9px 7px 12px;
+
+  font-size: 13px;
+}
+
+
+.session-chip button {
+  border: 0;
+
+  border-radius: 999px;
+
+  padding: 9px 14px;
+
+  background: #fff;
+
+  color: #000;
+
+  font-weight: 700;
+}
+
+
+.session-chip button:hover {
+  background: #ddd;
+}
+
+
+/* =====================================================
    STATUS
-   ========================================================= */
+   ===================================================== */
 
 .status-pill {
-
   border:
     1px solid #333;
 
   padding:
     9px 12px;
 
-  border-radius:
-    999px;
+  border-radius: 999px;
 
   background:
     rgba(0, 0, 0, .75);
 
-  color:
-    #a1a1aa;
+  color: #a1a1aa;
 
-  font-size:
-    12px;
+  font-size: 12px;
 
-  white-space:
-    nowrap;
+  white-space: nowrap;
 }
 
 
-/* =========================================================
-   SESIÓN
-   ========================================================= */
-
-.session-chip {
-
-  display:
-    flex;
-
-  align-items:
-    center;
-
-  gap:
-    10px;
-
-  background:
-    #080808;
-
-  border:
-    1px solid
-    var(--line);
-
-  border-radius:
-    999px;
-
-  padding:
-    7px 9px 7px 12px;
-
-  font-size:
-    13px;
-}
-
-
-.session-chip button {
-
-  border:
-    0;
-
-  border-radius:
-    999px;
-
-  padding:
-    9px 14px;
-
-  background:
-    #fff;
-
-  color:
-    #000;
-
-  font-weight:
-    700;
-}
-
-
-.session-chip button:hover {
-  background:
-    #ddd;
-}
-
-
-/* =========================================================
+/* =====================================================
    BOTONES
-   ========================================================= */
+   ===================================================== */
 
 .danger-btn {
-
   border:
     1px solid #7f1d1d;
 
-  border-radius:
-    999px;
+  border-radius: 999px;
 
-  padding:
-    9px 14px;
+  padding: 9px 14px;
 
-  background:
-    #450a0a;
+  background: #450a0a;
 
-  color:
-    #fca5a5;
+  color: #fca5a5;
 }
 
 
 .danger-btn:hover {
+  background: #7f1d1d;
 
-  background:
-    #7f1d1d;
-
-  color:
-    #fff;
+  color: #fff;
 }
 
 
 .primary-btn {
+  border: 0;
 
-  border:
-    0;
+  border-radius: 999px;
 
-  border-radius:
-    999px;
+  padding: 12px 14px;
 
-  padding:
-    12px 14px;
+  background: #fff;
 
-  background:
-    #fff;
+  color: #000;
 
-  color:
-    #000;
+  width: 100%;
 
-  width:
-    100%;
-
-  font-weight:
-    700;
+  font-weight: 700;
 }
 
 
 .primary-btn:hover {
-  background:
-    #e5e5e5;
+  background: #e5e5e5;
 }
 
 
-/* =========================================================
+/* =====================================================
    CONTENIDO
-   ========================================================= */
+   ===================================================== */
 
 .app-shell {
-
   width:
     min(1500px, calc(100% - 40px));
 
-  margin:
-    0 auto;
+  margin: 0 auto;
 
   padding:
     50px 0 70px;
 }
 
 
-/* =========================================================
-   LOS 4 GRUPOS
-   ========================================================= */
+/* =====================================================
+   CUATRO RANKINGS JUNTOS
+   ===================================================== */
 
 .rankings-grid {
-
-  display:
-    grid;
+  display: grid;
 
   grid-template-columns:
     repeat(4, minmax(0, 1fr));
 
-  gap:
-    14px;
+  gap: 14px;
 
-  width:
-    100%;
+  width: 100%;
 
-  align-items:
-    start;
+  align-items: start;
 }
 
 
-/* =========================================================
+/* =====================================================
    TARJETAS
-   ========================================================= */
+   ===================================================== */
 
 .ranking-card {
+  position: relative;
 
-  position:
-    relative;
-
-  min-width:
-    0;
+  min-width: 0;
 
   background:
     rgba(0, 0, 0, .88);
@@ -482,116 +368,89 @@ button {
   border:
     1px solid #292929;
 
-  border-radius:
-    18px;
+  border-radius: 18px;
 
   box-shadow:
     var(--shadow);
 
-  padding:
-    18px;
+  padding: 18px;
 
   backdrop-filter:
     blur(12px);
 
-  overflow:
-    hidden;
+  overflow: hidden;
 }
 
 
-/* =========================================================
+/* =====================================================
    CABECERA
-   ========================================================= */
+   ===================================================== */
 
 .table-header {
+  display: flex;
 
-  display:
-    flex;
+  align-items: center;
 
-  align-items:
-    center;
+  justify-content: space-between;
 
-  justify-content:
-    space-between;
-
-  margin-bottom:
-    14px;
+  margin-bottom: 14px;
 }
 
 
 .table-header h3 {
-
   margin:
     7px 0 0;
 
-  font-size:
-    20px;
+  font-size: 20px;
 
-  letter-spacing:
-    -.03em;
+  letter-spacing: -.03em;
 
-  color:
-    #fff;
+  color: #fff;
 
-  white-space:
-    nowrap;
+  white-space: nowrap;
 }
 
 
 .eyebrow {
+  font-size: 9px;
 
-  font-size:
-    9px;
+  letter-spacing: .16em;
 
-  letter-spacing:
-    .16em;
+  font-weight: 800;
 
-  font-weight:
-    800;
-
-  color:
-    #a1a1aa;
+  color: #a1a1aa;
 }
 
 
-/* =========================================================
+/* =====================================================
    TABLA
-   ========================================================= */
+   ===================================================== */
 
 .table-wrap {
-
-  overflow:
-    hidden;
+  overflow: hidden;
 
   border:
     1px solid #292929;
 
-  border-radius:
-    13px;
+  border-radius: 13px;
 }
 
 
 table {
+  width: 100%;
 
-  width:
-    100%;
-
-  border-collapse:
-    collapse;
+  border-collapse: collapse;
 
   background:
     rgba(0, 0, 0, .85);
 
-  table-layout:
-    fixed;
+  table-layout: fixed;
 }
 
 
 th,
 td {
-
-  text-align:
-    left;
+  text-align: left;
 
   padding:
     12px 9px;
@@ -599,32 +458,24 @@ td {
   border-bottom:
     1px solid #292929;
 
-  color:
-    #fff;
+  color: #fff;
 }
 
 
 th {
+  font-size: 9px;
 
-  font-size:
-    9px;
+  text-transform: uppercase;
 
-  text-transform:
-    uppercase;
+  letter-spacing: .10em;
 
-  letter-spacing:
-    .10em;
+  color: #a1a1aa;
 
-  color:
-    #a1a1aa;
-
-  background:
-    #0c0c0c;
+  background: #0c0c0c;
 }
 
 
 tbody tr {
-
   background:
     rgba(0, 0, 0, .7);
 
@@ -634,100 +485,75 @@ tbody tr {
 
 
 tbody tr:hover {
-  background:
-    #111;
+  background: #111;
 }
 
 
 tbody tr:last-child td {
-  border-bottom:
-    0;
+  border-bottom: 0;
 }
 
 
-/* =========================================================
+/* =====================================================
    POSICIÓN
-   ========================================================= */
+   ===================================================== */
 
 .position-cell {
+  width: 42px;
 
-  width:
-    42px;
+  font-weight: 800;
 
-  font-weight:
-    800;
-
-  font-size:
-    12px;
+  font-size: 12px;
 }
 
 
-/* =========================================================
+/* =====================================================
    PERSONA
-   ========================================================= */
+   ===================================================== */
 
 .person-cell {
+  display: flex;
 
-  display:
-    flex;
+  align-items: center;
 
-  align-items:
-    center;
+  gap: 7px;
 
-  gap:
-    7px;
-
-  min-width:
-    0;
+  min-width: 0;
 }
 
 
 .person-name {
+  font-weight: 700;
 
-  font-weight:
-    700;
+  color: #fff;
 
-  color:
-    #fff;
+  overflow: hidden;
 
-  overflow:
-    hidden;
+  text-overflow: ellipsis;
 
-  text-overflow:
-    ellipsis;
+  white-space: nowrap;
 
-  white-space:
-    nowrap;
+  min-width: 0;
 
-  min-width:
-    0;
-
-  flex:
-    1;
+  flex: 1;
 }
 
 
-/* =========================================================
+/* =====================================================
    AVATAR
-   ========================================================= */
+   ===================================================== */
 
 .avatar,
 .avatar-fallback {
-
-  width:
-    30px;
-
-  height:
-    30px;
+  width: 30px;
+  height: 30px;
 
   flex:
     0 0 30px;
 
-  border-radius:
-    50%;
+  border-radius: 50%;
 
-  object-fit:
-    cover;
+  object-fit: cover;
 
   border:
     1px solid #333;
@@ -735,105 +561,78 @@ tbody tr:last-child td {
 
 
 .avatar-fallback {
-
-  background:
-    #171717;
+  background: #171717;
 }
 
 
-/* =========================================================
+/* =====================================================
    BOTÓN +
-   ========================================================= */
+   ===================================================== */
 
 .add-money-btn {
+  margin-left: auto;
 
-  margin-left:
-    auto;
+  width: 27px;
+  height: 27px;
 
-  width:
-    27px;
+  min-width: 27px;
 
-  height:
-    27px;
+  padding: 0;
 
-  min-width:
-    27px;
-
-  padding:
-    0;
-
-  border-radius:
-    50%;
+  border-radius: 50%;
 
   border:
     1px solid #444;
 
-  background:
-    #111;
+  background: #111;
 
-  color:
-    #fff;
+  color: #fff;
 
-  font-size:
-    17px;
+  font-size: 17px;
 
-  line-height:
-    1;
+  line-height: 1;
 }
 
 
 .add-money-btn:hover {
+  background: #fff;
 
-  background:
-    #fff;
-
-  color:
-    #000;
+  color: #000;
 }
 
 
-/* =========================================================
+/* =====================================================
    VACÍO
-   ========================================================= */
+   ===================================================== */
 
 .empty {
+  text-align: center;
 
-  text-align:
-    center;
-
-  color:
-    #777;
+  color: #777;
 
   padding:
     25px 8px;
 
-  font-size:
-    11px;
+  font-size: 11px;
 }
 
 
-/* =========================================================
+/* =====================================================
    DIALOG
-   ========================================================= */
+   ===================================================== */
 
 .dialog {
+  border: 0;
 
-  border:
-    0;
+  border-radius: 24px;
 
-  border-radius:
-    24px;
+  padding: 0;
 
-  padding:
-    0;
-
-  background:
-    transparent;
+  background: transparent;
 }
 
 
 .dialog::backdrop {
-
   background:
     rgba(0, 0, 0, .82);
 
@@ -843,110 +642,84 @@ tbody tr:last-child td {
 
 
 .auth-card {
-
   width:
     min(430px, calc(100vw - 30px));
 
-  background:
-    #050505;
+  background: #050505;
 
   border:
     1px solid #292929;
 
-  border-radius:
-    24px;
+  border-radius: 24px;
 
-  padding:
-    30px;
+  padding: 30px;
 
   box-shadow:
-    0 30px 80px
-    rgba(0, 0, 0, .8);
+    0 30px 80px rgba(0, 0, 0, .8);
 
-  position:
-    relative;
+  position: relative;
 
-  color:
-    #fff;
+  color: #fff;
 }
 
 
 .auth-card h2 {
-
   margin:
     8px 0;
 
-  font-size:
-    30px;
+  font-size: 30px;
 
-  letter-spacing:
-    -.04em;
+  letter-spacing: -.04em;
 
-  color:
-    #fff;
+  color: #fff;
 }
 
 
 .auth-card > p {
-  color:
-    #a1a1aa;
+  color: #a1a1aa;
 }
 
 
 .auth-card label {
+  display: block;
 
-  display:
-    block;
+  font-size: 12px;
 
-  font-size:
-    12px;
-
-  font-weight:
-    700;
+  font-weight: 700;
 
   margin:
     17px 0 7px;
 
-  color:
-    #fff;
+  color: #fff;
 }
 
 
 .auth-card input {
-
-  width:
-    100%;
+  width: 100%;
 
   border:
     1px solid #333;
 
-  border-radius:
-    12px;
+  border-radius: 12px;
 
   padding:
     12px 13px;
 
-  outline:
-    none;
+  outline: none;
 
-  background:
-    #111;
+  background: #111;
 
-  color:
-    #fff;
+  color: #fff;
 }
 
 
 .auth-card input::placeholder {
-  color:
-    #666;
+  color: #666;
 }
 
 
 .auth-card input:focus {
-
-  border-color:
-    #fff;
+  border-color: #fff;
 
   box-shadow:
     0 0 0 2px
@@ -955,132 +728,97 @@ tbody tr:last-child td {
 
 
 .close-btn {
+  position: absolute;
 
-  position:
-    absolute;
+  right: 14px;
+  top: 14px;
 
-  right:
-    14px;
+  border: 0;
 
-  top:
-    14px;
+  background: #171717;
 
-  border:
-    0;
+  color: #fff;
 
-  background:
-    #171717;
+  border-radius: 50%;
 
-  color:
-    #fff;
+  width: 34px;
+  height: 34px;
 
-  border-radius:
-    50%;
-
-  width:
-    34px;
-
-  height:
-    34px;
-
-  font-size:
-    22px;
+  font-size: 22px;
 }
 
 
 .close-btn:hover {
+  background: #fff;
 
-  background:
-    #fff;
-
-  color:
-    #000;
+  color: #000;
 }
 
 
 .helper {
+  font-size: 12px;
 
-  font-size:
-    12px;
-
-  color:
-    #777;
+  color: #777;
 }
 
 
 .form-message {
+  min-height: 18px;
 
-  min-height:
-    18px;
+  font-size: 12px;
 
-  font-size:
-    12px;
-
-  color:
-    #ef4444;
+  color: #ef4444;
 }
 
 
-/* =========================================================
+/* =====================================================
    SCROLLBAR
-   ========================================================= */
+   ===================================================== */
 
 ::-webkit-scrollbar {
-
-  width:
-    8px;
-
-  height:
-    8px;
+  width: 8px;
+  height: 8px;
 }
 
 
 ::-webkit-scrollbar-track {
-  background:
-    #000;
+  background: #000;
 }
 
 
 ::-webkit-scrollbar-thumb {
+  background: #333;
 
-  background:
-    #333;
-
-  border-radius:
-    999px;
+  border-radius: 999px;
 }
 
 
 ::-webkit-scrollbar-thumb:hover {
-  background:
-    #555;
+  background: #555;
 }
 
 
-/* =========================================================
+/* =====================================================
    TABLET
-   ========================================================= */
+   ===================================================== */
 
 @media (max-width: 1200px) {
 
   .rankings-grid {
-
     grid-template-columns:
       repeat(2, minmax(0, 1fr));
-
   }
 
 }
 
 
-/* =========================================================
+/* =====================================================
    MÓVIL
-   ========================================================= */
+   ===================================================== */
 
 @media (max-width: 650px) {
 
   .topbar {
-
     padding:
       14px 18px;
 
@@ -1090,28 +828,22 @@ tbody tr:last-child td {
 
 
   .brand p {
-    display:
-      none;
+    display: none;
   }
 
 
   .top-actions {
-
-    gap:
-      6px;
+    gap: 6px;
   }
 
 
   .status-pill {
-    display:
-      none;
+    display: none;
   }
 
 
   .app-shell {
-
-    width:
-      100%;
+    width: 100%;
 
     padding:
       30px 12px 50px;
@@ -1119,15 +851,11 @@ tbody tr:last-child td {
 
 
   .rankings-grid {
+    display: flex;
 
-    display:
-      flex;
+    gap: 12px;
 
-    gap:
-      12px;
-
-    overflow-x:
-      auto;
+    overflow-x: auto;
 
     padding:
       4px 2px 15px;
@@ -1141,7 +869,6 @@ tbody tr:last-child td {
 
 
   .rankings-grid .ranking-card {
-
     flex:
       0 0 280px;
 
@@ -1151,7 +878,6 @@ tbody tr:last-child td {
 
 
   body {
-
     background-attachment:
       scroll;
   }

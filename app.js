@@ -2,7 +2,6 @@ import {
   initializeApp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-
 import {
   getFirestore,
   collection,
@@ -11,7 +10,6 @@ import {
   onSnapshot,
   query,
   where,
-  orderBy,
   doc,
   setDoc,
   updateDoc,
@@ -20,14 +18,12 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-
 import {
   getStorage,
   ref,
   uploadBytes,
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
-
 
 
 /* =========================================================
@@ -61,18 +57,13 @@ const firebaseConfig = {
 
 
 const app =
-  initializeApp(
-    firebaseConfig
-  );
-
+  initializeApp(firebaseConfig);
 
 const db =
   getFirestore(app);
 
-
 const storage =
   getStorage(app);
-
 
 
 /* =========================================================
@@ -80,69 +71,52 @@ const storage =
    ========================================================= */
 
 const TABLES = [
-
   "20 Bolsas",
-
   "16 Bolsas",
-
   "12 Bolsas",
-
-  "68"
-
+  "6 / 8"
 ];
 
 
 /*
-  Las colecciones antiguas se mantienen como lectura
-  para no perder los datos que ya tengas.
+  IMPORTANTE:
+
+  Los datos antiguos de "6 Bolsas" y "8 Bolsas"
+  se siguen leyendo para no perderlos.
+
+  Las personas nuevas del grupo se guardan en
+  "6 / 8".
 */
 
 const LEGACY_68_TABLES = [
-
-  "8 Bolsas",
-
-  "6 Bolsas"
-
+  "6 Bolsas",
+  "8 Bolsas"
 ];
-
 
 
 /* =========================================================
    ESTADO
    ========================================================= */
 
-let currentAdmin =
-  null;
+let currentAdmin = null;
 
+let currentMoneyPerson = null;
 
-let currentMoneyPerson =
-  null;
+let currentMoneyTable = null;
 
+let currentMoneyCollection = null;
 
-let currentMoneyTable =
-  null;
+let currentAddPersonTable = null;
 
-
-let currentMoneyCollection =
-  null;
-
-
-let currentAddPersonTable =
-  null;
-
-
-let unsubscribeRankings =
-  [];
-
+let unsubscribeRankings = [];
 
 
 /* =========================================================
    ELEMENTOS
    ========================================================= */
 
-const $ =
-  id =>
-    document.getElementById(id);
+const $ = id =>
+  document.getElementById(id);
 
 
 const els = {
@@ -225,40 +199,33 @@ const els = {
 };
 
 
-
 /* =========================================================
    CUERPOS DE LAS TABLAS
    ========================================================= */
 
 const rankingBodies = [
 
-  $("rankingBody0"),
-
-  $("rankingBody1"),
+  $("rankingBody68"),
 
   $("rankingBody2"),
 
-  $("rankingBody68")
+  $("rankingBody1"),
+
+  $("rankingBody0")
 
 ];
 
 
 const rankingPeople = [
-
   [],
-
   [],
-
   [],
-
   []
-
 ];
 
 
-
 /* =========================================================
-   SEGURIDAD PARA HTML
+   ESCAPAR HTML
    ========================================================= */
 
 function escapeHtml(value) {
@@ -270,20 +237,15 @@ function escapeHtml(value) {
 
         const map = {
 
-          "&":
-            "&amp;",
+          "&": "&amp;",
 
-          "<":
-            "&lt;",
+          "<": "&lt;",
 
-          ">":
-            "&gt;",
+          ">": "&gt;",
 
-          '"':
-            "&quot;",
+          '"': "&quot;",
 
-          "'":
-            "&#039;"
+          "'": "&#039;"
 
         };
 
@@ -295,9 +257,8 @@ function escapeHtml(value) {
 }
 
 
-
 /* =========================================================
-   MENSAJE DE ERROR
+   MENSAJES
    ========================================================= */
 
 function showError(
@@ -315,9 +276,44 @@ function showError(
 }
 
 
+/* =========================================================
+   FIREBASE ERROR
+   ========================================================= */
+
+function firebaseErrorMessage(error) {
+
+  const code =
+    error?.code || "";
+
+
+  const messages = {
+
+    "permission-denied":
+      "Firebase ha rechazado la operación por las reglas de Firestore.",
+
+    "storage/unauthorized":
+      "No tienes permisos para subir esta foto.",
+
+    "storage/unauthenticated":
+      "No tienes permiso para utilizar Storage.",
+
+    "storage/quota-exceeded":
+      "Se ha superado la cuota de almacenamiento."
+
+  };
+
+
+  return (
+    messages[code] ||
+    error?.message ||
+    "Ha ocurrido un error."
+  );
+
+}
+
 
 /* =========================================================
-   LOGIN FIREBASE
+   LOGIN
    ========================================================= */
 
 async function loginAdmin(
@@ -362,12 +358,8 @@ async function loginAdmin(
     await getDocs(q);
 
 
-  if (
-    snapshot.empty
-  ) {
-
+  if (snapshot.empty) {
     return null;
-
   }
 
 
@@ -382,9 +374,7 @@ async function loginAdmin(
   if (
     data.activo === false
   ) {
-
     return null;
-
   }
 
 
@@ -410,17 +400,12 @@ async function loginAdmin(
 }
 
 
-
 /* =========================================================
    SESIÓN
    ========================================================= */
 
 function isAdmin() {
-
-  return (
-    currentAdmin !== null
-  );
-
+  return currentAdmin !== null;
 }
 
 
@@ -433,19 +418,15 @@ function canResetMoney() {
 
   const name =
     String(
-      currentAdmin.nombre ||
-      ""
+      currentAdmin.nombre || ""
     )
       .trim()
       .toLowerCase();
 
 
   return (
-
     name === "carlos" ||
-
     currentAdmin.canReset === true
-
   );
 
 }
@@ -460,18 +441,14 @@ function saveSession() {
     );
 
     return;
-
   }
 
 
   localStorage.setItem(
-
     "rankingAdmin",
-
     JSON.stringify(
       currentAdmin
     )
-
   );
 
 }
@@ -513,7 +490,6 @@ function loadSession() {
       error
     );
 
-
     currentAdmin =
       null;
 
@@ -522,9 +498,8 @@ function loadSession() {
 }
 
 
-
 /* =========================================================
-   ACTUALIZAR INTERFAZ DE SESIÓN
+   ACTUALIZAR SESIÓN
    ========================================================= */
 
 function updateSessionUI() {
@@ -540,9 +515,7 @@ function updateSessionUI() {
       "";
 
 
-    if (
-      els.carlosResetBtn
-    ) {
+    if (els.carlosResetBtn) {
 
       els.carlosResetBtn
         .classList
@@ -551,9 +524,7 @@ function updateSessionUI() {
     }
 
 
-    if (
-      els.statusPill
-    ) {
+    if (els.statusPill) {
 
       els.statusPill.textContent =
         "Solo lectura";
@@ -562,7 +533,6 @@ function updateSessionUI() {
 
 
     return;
-
   }
 
 
@@ -582,9 +552,7 @@ function updateSessionUI() {
       <button
         id="logoutBtn"
         type="button">
-
         Salir
-
       </button>
 
     </div>
@@ -606,9 +574,7 @@ function updateSessionUI() {
   }
 
 
-  if (
-    els.carlosResetBtn
-  ) {
+  if (els.carlosResetBtn) {
 
     els.carlosResetBtn
       .classList
@@ -620,9 +586,7 @@ function updateSessionUI() {
   }
 
 
-  if (
-    els.statusPill
-  ) {
+  if (els.statusPill) {
 
     els.statusPill.textContent =
       "Administrador";
@@ -630,7 +594,6 @@ function updateSessionUI() {
   }
 
 }
-
 
 
 /* =========================================================
@@ -655,9 +618,8 @@ function logout() {
 }
 
 
-
 /* =========================================================
-   SUSCRIBIRSE A LOS RANKINGS
+   SUSCRIBIR TODOS
    ========================================================= */
 
 function subscribeAllRankings() {
@@ -674,13 +636,8 @@ function subscribeAllRankings() {
     );
 
 
-  unsubscribeRankings =
-    [];
+  unsubscribeRankings = [];
 
-
-  /*
-    20
-  */
 
   subscribeNormalRanking(
     "20 Bolsas",
@@ -688,19 +645,11 @@ function subscribeAllRankings() {
   );
 
 
-  /*
-    16
-  */
-
   subscribeNormalRanking(
     "16 Bolsas",
     1
   );
 
-
-  /*
-    12
-  */
 
   subscribeNormalRanking(
     "12 Bolsas",
@@ -708,21 +657,9 @@ function subscribeAllRankings() {
   );
 
 
-  /*
-    68
-
-    Se leen:
-    - colección nueva "68"
-    - colección antigua "8 Bolsas"
-    - colección antigua "6 Bolsas"
-
-    Todo aparece en UNA sola tabla.
-  */
-
   subscribe68Ranking();
 
 }
-
 
 
 /* =========================================================
@@ -748,15 +685,11 @@ function subscribeNormalRanking(
   body.innerHTML = `
 
     <tr>
-
       <td
         colspan="2"
         class="empty">
-
         Cargando…
-
       </td>
-
     </tr>
 
   `;
@@ -764,35 +697,24 @@ function subscribeNormalRanking(
 
   const peopleRef =
     collection(
-
       db,
-
       "tables",
-
       tableName,
-
       "people"
-
     );
 
 
-  const q =
-    query(
+  /*
+    No usamos orderBy de Firestore.
 
-      peopleRef,
-
-      orderBy(
-        "money",
-        "desc"
-      )
-
-    );
-
+    Ordenamos en JavaScript para evitar errores
+    si alguna persona antigua no tiene "money".
+  */
 
   const unsubscribe =
     onSnapshot(
 
-      q,
+      peopleRef,
 
       snapshot => {
 
@@ -813,6 +735,13 @@ function subscribeNormalRanking(
           );
 
 
+        rankingPeople[
+          tableIndex
+        ].sort(
+          sortByMoney
+        );
+
+
         renderRanking(
           tableIndex
         );
@@ -828,18 +757,19 @@ function subscribeNormalRanking(
         );
 
 
+        if (!body) {
+          return;
+        }
+
+
         body.innerHTML = `
 
           <tr>
-
             <td
               colspan="2"
               class="empty">
-
               No se pudo cargar.
-
             </td>
-
           </tr>
 
         `;
@@ -856,9 +786,8 @@ function subscribeNormalRanking(
 }
 
 
-
 /* =========================================================
-   RANKING 68
+   GRUPO 6 / 8
    ========================================================= */
 
 function subscribe68Ranking() {
@@ -868,6 +797,10 @@ function subscribe68Ranking() {
 
 
   if (!body) {
+    console.error(
+      "No existe #rankingBody68 en index.html"
+    );
+
     return;
   }
 
@@ -875,38 +808,40 @@ function subscribe68Ranking() {
   body.innerHTML = `
 
     <tr>
-
       <td
         colspan="2"
         class="empty">
-
         Cargando…
-
       </td>
-
     </tr>
 
   `;
 
 
+  /*
+    Colecciones que se unen:
+
+    1. 6 / 8
+    2. 6 Bolsas
+    3. 8 Bolsas
+
+    Visualmente serán UNA SOLA TABLA.
+  */
+
   const sources = [
-
-    "68",
-
-    "8 Bolsas",
-
-    "6 Bolsas"
-
+    "6 / 8",
+    "6 Bolsas",
+    "8 Bolsas"
   ];
 
 
   const sourceData = {
 
-    "68": [],
+    "6 / 8": [],
 
-    "8 Bolsas": [],
+    "6 Bolsas": [],
 
-    "6 Bolsas": []
+    "8 Bolsas": []
 
   };
 
@@ -916,35 +851,17 @@ function subscribe68Ranking() {
 
       const peopleRef =
         collection(
-
           db,
-
           "tables",
-
           sourceName,
-
           "people"
-
-        );
-
-
-      const q =
-        query(
-
-          peopleRef,
-
-          orderBy(
-            "money",
-            "desc"
-          )
-
         );
 
 
       const unsubscribe =
         onSnapshot(
 
-          q,
+          peopleRef,
 
           snapshot => {
 
@@ -968,23 +885,17 @@ function subscribe68Ranking() {
 
             const merged = [
 
-              ...sourceData["68"],
+              ...sourceData["6 / 8"],
 
-              ...sourceData["8 Bolsas"],
+              ...sourceData["6 Bolsas"],
 
-              ...sourceData["6 Bolsas"]
+              ...sourceData["8 Bolsas"]
 
             ];
 
 
             merged.sort(
-              (a, b) =>
-                Number(
-                  b.money || 0
-                ) -
-                Number(
-                  a.money || 0
-                )
+              sortByMoney
             );
 
 
@@ -992,9 +903,7 @@ function subscribe68Ranking() {
               merged;
 
 
-            renderRanking(
-              3
-            );
+            renderRanking(3);
 
           },
 
@@ -1002,7 +911,7 @@ function subscribe68Ranking() {
           error => {
 
             console.error(
-              `Error en grupo 68 / ${sourceName}:`,
+              `Error en grupo 6 / 8 (${sourceName}):`,
               error
             );
 
@@ -1021,6 +930,27 @@ function subscribe68Ranking() {
 }
 
 
+/* =========================================================
+   ORDENAR POR DINERO
+   ========================================================= */
+
+function sortByMoney(
+  a,
+  b
+) {
+
+  const moneyA =
+    Number(a?.money || 0);
+
+
+  const moneyB =
+    Number(b?.money || 0);
+
+
+  return moneyB - moneyA;
+
+}
+
 
 /* =========================================================
    RENDER RANKING
@@ -1036,7 +966,20 @@ function renderRanking(
     ];
 
 
+  /*
+    ESTA COMPROBACIÓN EVITA:
+
+    Cannot set properties of null
+    (setting 'innerHTML')
+  */
+
   if (!body) {
+
+    console.warn(
+      "No existe el cuerpo del ranking:",
+      tableIndex
+    );
+
     return;
   }
 
@@ -1079,18 +1022,14 @@ function renderRanking(
         index
       ) => {
 
-        const template =
-          $("rowTemplate");
-
-
-        if (!template) {
+        if (!els.rowTemplate) {
           return;
         }
 
 
         const fragment =
           document.importNode(
-            template.content,
+            els.rowTemplate.content,
             true
           );
 
@@ -1147,9 +1086,7 @@ function renderRanking(
           fallback
         ) {
 
-          if (
-            person.photoURL
-          ) {
+          if (person.photoURL) {
 
             image.src =
               person.photoURL;
@@ -1211,9 +1148,7 @@ function renderRanking(
 
 
   /*
-    Botón para añadir persona.
-
-    Solo se añade cuando hay administrador.
+    Botón de añadir persona.
   */
 
   if (isAdmin()) {
@@ -1272,7 +1207,6 @@ function renderRanking(
 }
 
 
-
 /* =========================================================
    RENDER TODO
    ========================================================= */
@@ -1290,9 +1224,8 @@ function renderAllRankings() {
 }
 
 
-
 /* =========================================================
-   ABRIR AÑADIR PERSONA
+   AÑADIR PERSONA
    ========================================================= */
 
 function openAddPersonDialog(
@@ -1345,9 +1278,8 @@ function openAddPersonDialog(
 }
 
 
-
 /* =========================================================
-   ABRIR DINERO
+   AÑADIR DINERO
    ========================================================= */
 
 function openMoneyDialog(
@@ -1368,11 +1300,21 @@ function openMoneyDialog(
     tableIndex;
 
 
+  /*
+    MUY IMPORTANTE:
+
+    Si la persona viene de "6 Bolsas" o "8 Bolsas",
+    se actualiza en su colección original.
+
+    Si es una persona nueva del grupo 6 / 8,
+    se actualiza en "6 / 8".
+  */
+
   currentMoneyCollection =
     person.tableName ||
     (
       tableIndex === 3
-        ? "68"
+        ? "6 / 8"
         : TABLES[tableIndex]
     );
 
@@ -1380,14 +1322,18 @@ function openMoneyDialog(
   if (els.moneyTitle) {
 
     els.moneyTitle.textContent =
-      `Añadir dinero a ${person.name || "esta persona"}`;
+      `Añadir dinero a ${
+        person.name || "esta persona"
+      }`;
 
   }
 
 
   if (els.moneyAmount) {
+
     els.moneyAmount.value =
       "";
+
   }
 
 
@@ -1408,7 +1354,6 @@ function openMoneyDialog(
   }
 
 }
-
 
 
 /* =========================================================
@@ -1460,7 +1405,6 @@ if (els.loginHotspot) {
 }
 
 
-
 /* =========================================================
    CERRAR LOGIN
    ========================================================= */
@@ -1484,7 +1428,6 @@ if (els.closeAuth) {
   );
 
 }
-
 
 
 /* =========================================================
@@ -1512,7 +1455,6 @@ if (els.closeAddPerson) {
 }
 
 
-
 /* =========================================================
    CERRAR DINERO
    ========================================================= */
@@ -1536,7 +1478,6 @@ if (els.closeMoney) {
   );
 
 }
-
 
 
 /* =========================================================
@@ -1627,9 +1568,7 @@ if (els.authForm) {
 
         saveSession();
 
-
         updateSessionUI();
-
 
         renderAllRankings();
 
@@ -1680,9 +1619,8 @@ if (els.authForm) {
 }
 
 
-
 /* =========================================================
-   AÑADIR DINERO
+   SUMAR DINERO
    ========================================================= */
 
 if (els.moneyForm) {
@@ -1743,7 +1681,7 @@ if (els.moneyForm) {
           currentMoneyCollection ||
           (
             currentMoneyTable === 3
-              ? "68"
+              ? "6 / 8"
               : TABLES[currentMoneyTable]
           );
 
@@ -1751,17 +1689,11 @@ if (els.moneyForm) {
         await updateDoc(
 
           doc(
-
             db,
-
             "tables",
-
             collectionName,
-
             "people",
-
             currentMoneyPerson.id
-
           ),
 
           {
@@ -1815,7 +1747,6 @@ if (els.moneyForm) {
   );
 
 }
-
 
 
 /* =========================================================
@@ -1904,13 +1835,16 @@ if (els.addPersonForm) {
       try {
 
         /*
-          Si es el grupo 68, las nuevas personas
-          se guardan directamente en "68".
+          Para el cuarto grupo:
+
+          "6 / 8"
+
+          Las personas nuevas se guardan aquí.
         */
 
         const collectionName =
           currentAddPersonTable === 3
-            ? "68"
+            ? "6 / 8"
             : TABLES[
                 currentAddPersonTable
               ];
@@ -1918,22 +1852,15 @@ if (els.addPersonForm) {
 
         const peopleRef =
           collection(
-
             db,
-
             "tables",
-
             collectionName,
-
             "people"
-
           );
 
 
         const newPersonRef =
-          doc(
-            peopleRef
-          );
+          doc(peopleRef);
 
 
         let photoURL =
@@ -2047,7 +1974,6 @@ if (els.addPersonForm) {
 }
 
 
-
 /* =========================================================
    RESET DINERO
    ========================================================= */
@@ -2070,9 +1996,7 @@ if (els.carlosResetBtn) {
 
       const ok =
         confirm(
-
           "Esto pondrá el dinero de TODAS las personas de TODOS los grupos a 0. Los nombres y fotos se conservarán. ¿Continuar?"
-
         );
 
 
@@ -2083,11 +2007,6 @@ if (els.carlosResetBtn) {
 
       try {
 
-        /*
-          Incluimos las antiguas 8 y 6
-          para no dejar dinero antiguo sin resetear.
-        */
-
         const allCollections = [
 
           "20 Bolsas",
@@ -2096,11 +2015,11 @@ if (els.carlosResetBtn) {
 
           "12 Bolsas",
 
-          "68",
+          "6 / 8",
 
-          "8 Bolsas",
+          "6 Bolsas",
 
-          "6 Bolsas"
+          "8 Bolsas"
 
         ];
 
@@ -2112,15 +2031,10 @@ if (els.carlosResetBtn) {
 
           const peopleRef =
             collection(
-
               db,
-
               "tables",
-
               tableName,
-
               "people"
-
             );
 
 
@@ -2130,12 +2044,8 @@ if (els.carlosResetBtn) {
             );
 
 
-          if (
-            snapshot.empty
-          ) {
-
+          if (snapshot.empty) {
             continue;
-
           }
 
 
@@ -2152,8 +2062,7 @@ if (els.carlosResetBtn) {
 
                 {
 
-                  money:
-                    0,
+                  money: 0,
 
                   updatedAt:
                     serverTimestamp()
@@ -2195,53 +2104,8 @@ if (els.carlosResetBtn) {
 }
 
 
-
 /* =========================================================
-   MENSAJES FIREBASE
-   ========================================================= */
-
-function firebaseErrorMessage(
-  error
-) {
-
-  const code =
-    error?.code ||
-    "";
-
-
-  const messages = {
-
-    "permission-denied":
-      "Firebase ha rechazado la operación por las reglas de Firestore.",
-
-    "storage/unauthorized":
-      "No tienes permisos para subir esta foto.",
-
-    "storage/unauthenticated":
-      "No tienes permiso para utilizar Storage.",
-
-    "storage/quota-exceeded":
-      "Se ha superado la cuota de almacenamiento."
-
-  };
-
-
-  return (
-
-    messages[code] ||
-
-    error?.message ||
-
-    "Ha ocurrido un error."
-
-  );
-
-}
-
-
-
-/* =========================================================
-   INICIO
+   INICIAR
    ========================================================= */
 
 loadSession();
