@@ -1,3 +1,5 @@
+console.log("Ranking de Bolsas - app.js v7");
+
 import {
   initializeApp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
@@ -56,14 +58,11 @@ const firebaseConfig = {
 };
 
 
-const app =
-  initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-const db =
-  getFirestore(app);
+const db = getFirestore(app);
 
-const storage =
-  getStorage(app);
+const storage = getStorage(app);
 
 
 /* =========================================================
@@ -79,13 +78,8 @@ const TABLES = [
 
 
 /*
-  IMPORTANTE:
-
-  Los datos antiguos de "6 Bolsas" y "8 Bolsas"
-  se siguen leyendo para no perderlos.
-
-  Las personas nuevas del grupo se guardan en
-  "6 / 8".
+  Conservamos las colecciones antiguas para que
+  las personas que ya existían en 6 y 8 no desaparezcan.
 */
 
 const LEGACY_68_TABLES = [
@@ -112,7 +106,7 @@ let unsubscribeRankings = [];
 
 
 /* =========================================================
-   ELEMENTOS
+   ELEMENTOS HTML
    ========================================================= */
 
 const $ = id =>
@@ -200,27 +194,48 @@ const els = {
 
 
 /* =========================================================
-   CUERPOS DE LAS TABLAS
+   TABLAS
+   =========================================================
+
+   0 = 20
+   1 = 16
+   2 = 12
+   3 = 6 / 8
+
+   El orden visual del HTML es:
+
+   6 / 8
+   12
+   16
+   20
+
+   Pero internamente mantenemos los índices originales
+   para no romper los datos de Firebase.
    ========================================================= */
 
 const rankingBodies = [
 
-  $("rankingBody68"),
+  $("rankingBody0"),   // 20
 
-  $("rankingBody2"),
+  $("rankingBody1"),   // 16
 
-  $("rankingBody1"),
+  $("rankingBody2"),   // 12
 
-  $("rankingBody0")
+  $("rankingBody68")   // 6 / 8
 
 ];
 
 
 const rankingPeople = [
+
   [],
+
   [],
+
   [],
+
   []
+
 ];
 
 
@@ -277,7 +292,7 @@ function showError(
 
 
 /* =========================================================
-   FIREBASE ERROR
+   ERRORES FIREBASE
    ========================================================= */
 
 function firebaseErrorMessage(error) {
@@ -374,7 +389,9 @@ async function loginAdmin(
   if (
     data.activo === false
   ) {
+
     return null;
+
   }
 
 
@@ -405,7 +422,9 @@ async function loginAdmin(
    ========================================================= */
 
 function isAdmin() {
+
   return currentAdmin !== null;
+
 }
 
 
@@ -441,6 +460,7 @@ function saveSession() {
     );
 
     return;
+
   }
 
 
@@ -533,6 +553,7 @@ function updateSessionUI() {
 
 
     return;
+
   }
 
 
@@ -619,7 +640,7 @@ function logout() {
 
 
 /* =========================================================
-   SUSCRIBIR TODOS
+   SUSCRIBIR TODOS LOS RANKINGS
    ========================================================= */
 
 function subscribeAllRankings() {
@@ -678,18 +699,28 @@ function subscribeNormalRanking(
 
 
   if (!body) {
+
+    console.warn(
+      `No existe el cuerpo del ranking ${tableName}`
+    );
+
     return;
+
   }
 
 
   body.innerHTML = `
 
     <tr>
+
       <td
         colspan="2"
         class="empty">
+
         Cargando…
+
       </td>
+
     </tr>
 
   `;
@@ -703,13 +734,6 @@ function subscribeNormalRanking(
       "people"
     );
 
-
-  /*
-    No usamos orderBy de Firestore.
-
-    Ordenamos en JavaScript para evitar errores
-    si alguna persona antigua no tiene "money".
-  */
 
   const unsubscribe =
     onSnapshot(
@@ -765,11 +789,15 @@ function subscribeNormalRanking(
         body.innerHTML = `
 
           <tr>
+
             <td
               colspan="2"
               class="empty">
+
               No se pudo cargar.
+
             </td>
+
           </tr>
 
         `;
@@ -797,41 +825,51 @@ function subscribe68Ranking() {
 
 
   if (!body) {
+
     console.error(
       "No existe #rankingBody68 en index.html"
     );
 
     return;
+
   }
 
 
   body.innerHTML = `
 
     <tr>
+
       <td
         colspan="2"
         class="empty">
+
         Cargando…
+
       </td>
+
     </tr>
 
   `;
 
 
   /*
-    Colecciones que se unen:
+    El grupo 6 / 8 junta:
 
-    1. 6 / 8
-    2. 6 Bolsas
-    3. 8 Bolsas
+    - 6 / 8
+    - 6 Bolsas
+    - 8 Bolsas
 
-    Visualmente serán UNA SOLA TABLA.
+    Todo aparece en UNA SOLA tabla.
   */
 
   const sources = [
+
     "6 / 8",
+
     "6 Bolsas",
+
     "8 Bolsas"
+
   ];
 
 
@@ -940,11 +978,15 @@ function sortByMoney(
 ) {
 
   const moneyA =
-    Number(a?.money || 0);
+    Number(
+      a?.money || 0
+    );
 
 
   const moneyB =
-    Number(b?.money || 0);
+    Number(
+      b?.money || 0
+    );
 
 
   return moneyB - moneyA;
@@ -966,13 +1008,6 @@ function renderRanking(
     ];
 
 
-  /*
-    ESTA COMPROBACIÓN EVITA:
-
-    Cannot set properties of null
-    (setting 'innerHTML')
-  */
-
   if (!body) {
 
     console.warn(
@@ -981,6 +1016,7 @@ function renderRanking(
     );
 
     return;
+
   }
 
 
@@ -1148,7 +1184,7 @@ function renderRanking(
 
 
   /*
-    Botón de añadir persona.
+    Solo el administrador ve el botón.
   */
 
   if (isAdmin()) {
@@ -1225,7 +1261,7 @@ function renderAllRankings() {
 
 
 /* =========================================================
-   AÑADIR PERSONA
+   AÑADIR PERSONA - ABRIR
    ========================================================= */
 
 function openAddPersonDialog(
@@ -1248,20 +1284,26 @@ function openAddPersonDialog(
 
 
   if (els.personName) {
+
     els.personName.value =
       "";
+
   }
 
 
   if (els.initialMoney) {
+
     els.initialMoney.value =
       "0";
+
   }
 
 
   if (els.personPhoto) {
+
     els.personPhoto.value =
       "";
+
   }
 
 
@@ -1279,7 +1321,7 @@ function openAddPersonDialog(
 
 
 /* =========================================================
-   AÑADIR DINERO
+   AÑADIR DINERO - ABRIR
    ========================================================= */
 
 function openMoneyDialog(
@@ -1301,13 +1343,10 @@ function openMoneyDialog(
 
 
   /*
-    MUY IMPORTANTE:
+    Si la persona antigua viene de 6 u 8,
+    actualizamos su colección original.
 
-    Si la persona viene de "6 Bolsas" o "8 Bolsas",
-    se actualiza en su colección original.
-
-    Si es una persona nueva del grupo 6 / 8,
-    se actualiza en "6 / 8".
+    Si es nueva, usamos 6 / 8.
   */
 
   currentMoneyCollection =
@@ -1378,14 +1417,18 @@ if (els.loginHotspot) {
 
 
       if (els.username) {
+
         els.username.value =
           "";
+
       }
 
 
       if (els.password) {
+
         els.password.value =
           "";
+
       }
 
 
@@ -1835,11 +1878,8 @@ if (els.addPersonForm) {
       try {
 
         /*
-          Para el cuarto grupo:
-
-          "6 / 8"
-
-          Las personas nuevas se guardan aquí.
+          Las personas nuevas del cuarto grupo
+          se guardan en "6 / 8".
         */
 
         const collectionName =
