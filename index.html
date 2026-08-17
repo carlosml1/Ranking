@@ -4,142 +4,401 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>Ranking de Bolsas</title>
+
   <link rel="stylesheet" href="styles.css">
 </head>
 
+
 <body>
 
-  <!-- BOTÓN OCULTO PARA LOGIN -->
-  <button id="loginHotspot" class="login-hotspot" aria-label="Abrir inicio de sesión" title="Iniciar sesión">
+
+  <!-- =====================================================
+       BOTÓN OCULTO PARA LOGIN
+       ===================================================== -->
+
+  <button
+    id="loginHotspot"
+    class="login-hotspot"
+    aria-label="Abrir inicio de sesión"
+    title="Iniciar sesión"
+    type="button">
   </button>
 
-  <!-- BARRA SUPERIOR -->
+
+  <!-- =====================================================
+       BARRA SUPERIOR
+       ===================================================== -->
+
   <header class="topbar">
 
     <div class="brand">
+
       <div class="brand-dot"></div>
 
       <div>
-        <h1>Ranking de Bolsas</h1>
-        <p>Clasificación por dinero</p>
+
+        <h1>
+          Ranking de Bolsas
+        </h1>
+
+        <p>
+          Clasificación por dinero
+        </p>
+
       </div>
+
     </div>
+
 
     <div class="top-actions">
 
-      <button id="carlosResetBtn" class="danger-btn hidden" type="button">
+      <button
+        id="carlosResetBtn"
+        class="danger-btn hidden"
+        type="button">
+
         Resetear dinero
+
       </button>
+
 
       <div id="sessionArea"></div>
 
-      <div id="statusPill" class="status-pill">
+
+      <div
+        id="statusPill"
+        class="status-pill">
+
         Solo lectura
+
       </div>
 
     </div>
+
   </header>
 
 
-  <!-- CONTENIDO PRINCIPAL -->
+  <!-- =====================================================
+       CONTENIDO
+       ===================================================== -->
+
   <main class="app-shell">
 
 
+    <section class="rankings-grid">
 
 
-    <!-- RANKING -->
-    <section class="ranking-card">
+      <!-- =================================================
+           20 BOLSAS
+           ================================================= -->
 
-      <!-- FLECHAS -->
-      <button id="prevTable" class="side-arrow left" aria-label="Tabla anterior" type="button">
-        ‹
-      </button>
+      <article class="ranking-card">
 
-      <button id="nextTable" class="side-arrow right" aria-label="Tabla siguiente" type="button">
-        ›
-      </button>
+        <div class="table-header">
 
+          <div>
 
-      <!-- CABECERA -->
-      <div class="table-header">
+            <span class="eyebrow">
+              GRUPO
+            </span>
 
-        <div>
-          <span class="eyebrow">CATEGORÍA</span>
+            <h3>
+              20 Bolsas
+            </h3>
 
-          <h3 id="tableTitle">
-            20 Bolsas
-          </h3>
+          </div>
+
         </div>
 
-        <div class="table-indicator" id="tableIndicator">
-          1 / 5
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Pos.
+                </th>
+
+                <th>
+                  Nombre
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody id="rankingBody0">
+
+              <tr>
+
+                <td
+                  colspan="2"
+                  class="empty">
+
+                  Cargando…
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
         </div>
 
-      </div>
+      </article>
 
 
-      <!-- TABLA -->
-      <div class="table-wrap">
 
-        <table>
+      <!-- =================================================
+           16 BOLSAS
+           ================================================= -->
 
-          <thead>
-            <tr>
-              <th>Posición</th>
-              <th>Nombre</th>
-            </tr>
-          </thead>
+      <article class="ranking-card">
 
-          <tbody id="rankingBody">
+        <div class="table-header">
 
-            <tr>
-              <td colspan="2" class="empty">
-                Cargando ranking…
-              </td>
-            </tr>
+          <div>
 
-          </tbody>
+            <span class="eyebrow">
+              GRUPO
+            </span>
 
-        </table>
+            <h3>
+              16 Bolsas
+            </h3>
 
-      </div>
+          </div>
+
+        </div>
 
 
-      <!-- NAVEGACIÓN MÓVIL -->
-      <div class="mobile-nav">
+        <div class="table-wrap">
 
-        <button id="prevTableMobile" type="button">
-          Anterior
-        </button>
+          <table>
 
-        <button id="nextTableMobile" type="button">
-          Siguiente
-        </button>
+            <thead>
 
-      </div>
+              <tr>
+
+                <th>
+                  Pos.
+                </th>
+
+                <th>
+                  Nombre
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody id="rankingBody1">
+
+              <tr>
+
+                <td
+                  colspan="2"
+                  class="empty">
+
+                  Cargando…
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- =================================================
+           12 BOLSAS
+           ================================================= -->
+
+      <article class="ranking-card">
+
+        <div class="table-header">
+
+          <div>
+
+            <span class="eyebrow">
+              GRUPO
+            </span>
+
+            <h3>
+              12 Bolsas
+            </h3>
+
+          </div>
+
+        </div>
+
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Pos.
+                </th>
+
+                <th>
+                  Nombre
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody id="rankingBody2">
+
+              <tr>
+
+                <td
+                  colspan="2"
+                  class="empty">
+
+                  Cargando…
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- =================================================
+           GRUPO 68
+           ================================================= -->
+
+      <article class="ranking-card">
+
+        <div class="table-header">
+
+          <div>
+
+            <span class="eyebrow">
+              GRUPO
+            </span>
+
+            <h3>
+              6 / 8 Bolsas
+            </h3>
+
+          </div>
+
+        </div>
+
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Pos.
+                </th>
+
+                <th>
+                  Nombre
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody id="rankingBody68">
+
+              <tr>
+
+                <td
+                  colspan="2"
+                  class="empty">
+
+                  Cargando…
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </article>
+
 
     </section>
 
   </main>
 
 
-  <!-- LOGIN -->
-  <dialog id="authDialog" class="dialog">
 
-    <form id="authForm" class="auth-card">
+  <!-- =====================================================
+       LOGIN
+       ===================================================== -->
 
-      <button type="button" id="closeAuth" class="close-btn" aria-label="Cerrar">
+  <dialog
+    id="authDialog"
+    class="dialog">
+
+    <form
+      id="authForm"
+      class="auth-card">
+
+      <button
+        type="button"
+        id="closeAuth"
+        class="close-btn"
+        aria-label="Cerrar">
+
         ×
+
       </button>
+
 
       <span class="eyebrow">
         ACCESO DE ADMINISTRADOR
       </span>
 
+
       <h2>
         Iniciar sesión
       </h2>
+
 
       <p>
         Introduce una cuenta incluida en la colección
@@ -151,21 +410,40 @@
         Usuario
       </label>
 
-      <input id="username" type="text" required placeholder="Usuario">
+
+      <input
+        id="username"
+        type="text"
+        required
+        placeholder="Usuario">
 
 
       <label for="password">
         Contraseña
       </label>
 
-      <input id="password" type="password" autocomplete="current-password" required placeholder="••••••••">
+
+      <input
+        id="password"
+        type="password"
+        autocomplete="current-password"
+        required
+        placeholder="••••••••">
 
 
-      <button id="authSubmit" class="primary-btn" type="submit">
+      <button
+        id="authSubmit"
+        class="primary-btn"
+        type="submit">
+
         Entrar
+
       </button>
 
-      <p id="authMessage" class="form-message">
+
+      <p
+        id="authMessage"
+        class="form-message">
       </p>
 
     </form>
@@ -173,18 +451,34 @@
   </dialog>
 
 
-  <!-- AÑADIR PERSONA -->
-  <dialog id="addPersonDialog" class="dialog">
 
-    <form id="addPersonForm" class="auth-card">
+  <!-- =====================================================
+       AÑADIR PERSONA
+       ===================================================== -->
 
-      <button type="button" id="closeAddPerson" class="close-btn" aria-label="Cerrar">
+  <dialog
+    id="addPersonDialog"
+    class="dialog">
+
+    <form
+      id="addPersonForm"
+      class="auth-card">
+
+      <button
+        type="button"
+        id="closeAddPerson"
+        class="close-btn"
+        aria-label="Cerrar">
+
         ×
+
       </button>
+
 
       <span class="eyebrow">
         NUEVA PERSONA
       </span>
+
 
       <h2>
         Añadir al ranking
@@ -195,34 +489,57 @@
         Nombre
       </label>
 
-      <input id="personName" type="text" maxlength="40" required placeholder="Ej. Carlos">
+
+      <input
+        id="personName"
+        type="text"
+        maxlength="40"
+        required
+        placeholder="Ej. Carlos">
 
 
       <label for="initialMoney">
         Dinero inicial
       </label>
 
-      <input id="initialMoney" type="number" min="0" step="0.01" value="0" required>
+
+      <input
+        id="initialMoney"
+        type="number"
+        min="0"
+        step="0.01"
+        value="0"
+        required>
 
 
       <label for="personPhoto">
         Foto (opcional)
       </label>
 
-      <input id="personPhoto" type="file" accept="image/*">
+
+      <input
+        id="personPhoto"
+        type="file"
+        accept="image/*">
 
 
       <p class="helper">
-        La persona se añadirá a la categoría que estás viendo.
+        La persona se añadirá al grupo que corresponda.
       </p>
 
 
-      <button class="primary-btn" type="submit">
+      <button
+        class="primary-btn"
+        type="submit">
+
         Añadir persona
+
       </button>
 
 
-      <p id="addPersonMessage" class="form-message">
+      <p
+        id="addPersonMessage"
+        class="form-message">
       </p>
 
     </form>
@@ -230,18 +547,34 @@
   </dialog>
 
 
-  <!-- AÑADIR DINERO -->
-  <dialog id="moneyDialog" class="dialog">
 
-    <form id="moneyForm" class="auth-card">
+  <!-- =====================================================
+       AÑADIR DINERO
+       ===================================================== -->
 
-      <button type="button" id="closeMoney" class="close-btn" aria-label="Cerrar">
+  <dialog
+    id="moneyDialog"
+    class="dialog">
+
+    <form
+      id="moneyForm"
+      class="auth-card">
+
+      <button
+        type="button"
+        id="closeMoney"
+        class="close-btn"
+        aria-label="Cerrar">
+
         ×
+
       </button>
+
 
       <span class="eyebrow">
         AÑADIR DINERO
       </span>
+
 
       <h2 id="moneyTitle">
         Añadir dinero
@@ -252,15 +585,28 @@
         Cantidad
       </label>
 
-      <input id="moneyAmount" type="number" min="0.01" step="0.01" required placeholder="0.00">
+
+      <input
+        id="moneyAmount"
+        type="number"
+        min="0.01"
+        step="0.01"
+        required
+        placeholder="0.00">
 
 
-      <button class="primary-btn" type="submit">
+      <button
+        class="primary-btn"
+        type="submit">
+
         Sumar dinero
+
       </button>
 
 
-      <p id="moneyMessage" class="form-message">
+      <p
+        id="moneyMessage"
+        class="form-message">
       </p>
 
     </form>
@@ -268,7 +614,11 @@
   </dialog>
 
 
-  <!-- FILA DE PERSONA -->
+
+  <!-- =====================================================
+       FILA DE PERSONA
+       ===================================================== -->
+
   <template id="rowTemplate">
 
     <tr class="person-row">
@@ -279,14 +629,26 @@
 
         <div class="person-cell">
 
-          <img class="avatar" alt="" hidden>
+          <img
+            class="avatar"
+            alt=""
+            hidden>
+
 
           <div class="avatar-fallback"></div>
 
+
           <span class="person-name"></span>
 
-          <button class="add-money-btn" title="Añadir dinero" aria-label="Añadir dinero" type="button">
+
+          <button
+            class="add-money-btn"
+            title="Añadir dinero"
+            aria-label="Añadir dinero"
+            type="button">
+
             +
+
           </button>
 
         </div>
@@ -298,8 +660,12 @@
   </template>
 
 
-  <script type="module" src="app.js">
+
+  <script
+    type="module"
+    src="app.js">
   </script>
+
 
 </body>
 
