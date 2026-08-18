@@ -80,6 +80,7 @@ let showMoneyInRankings = false;
 
 let unsubscribeRankings = [];
 
+let lastRankingUpdate = null;
 
 const $ = id =>
   document.getElementById(id);
@@ -249,6 +250,219 @@ function escapeHtml(value) {
   );
 
 }
+
+/* =========================================================
+   ÚLTIMA ACTUALIZACIÓN DEL RANKING
+   ========================================================= */
+
+function getTimestampMillis(timestamp) {
+
+  if (!timestamp) {
+    return null;
+  }
+
+  // Firebase Timestamp
+  if (typeof timestamp.toMillis === "function") {
+    return timestamp.toMillis();
+  }
+
+  // Timestamp recibido como objeto
+  if (typeof timestamp.seconds === "number") {
+    return timestamp.seconds * 1000;
+  }
+
+  // Fecha JS
+  if (timestamp instanceof Date) {
+    return timestamp.getTime();
+  }
+
+  // Número
+  if (typeof timestamp === "number") {
+    return timestamp;
+  }
+
+  return null;
+}
+
+
+function updateLastRankingUpdate(people) {
+
+  for (const person of people || []) {
+
+    const updated =
+      getTimestampMillis(person.updatedAt);
+
+    const created =
+      getTimestampMillis(person.createdAt);
+
+    const timestamp =
+      updated || created;
+
+    if (!timestamp) {
+      continue;
+    }
+
+    if (
+      lastRankingUpdate === null ||
+      timestamp > lastRankingUpdate
+    ) {
+
+      lastRankingUpdate =
+        timestamp;
+
+    }
+
+  }
+
+  renderLastRankingUpdate();
+}
+
+
+function formatElapsedTime(timestamp) {
+
+  if (!timestamp) {
+    return "Sin datos";
+  }
+
+  const now =
+    Date.now();
+
+  let difference =
+    Math.max(
+      0,
+      now - timestamp
+    );
+
+  const seconds =
+    Math.floor(
+      difference / 1000
+    );
+
+  const minutes =
+    Math.floor(
+      seconds / 60
+    );
+
+  const hours =
+    Math.floor(
+      minutes / 60
+    );
+
+  const days =
+    Math.floor(
+      hours / 24
+    );
+
+
+  if (seconds < 10) {
+    return "Hace unos segundos";
+  }
+
+  if (seconds < 60) {
+    return `Hace ${seconds} segundos`;
+  }
+
+  if (minutes < 60) {
+
+    const remainingSeconds =
+      seconds % 60;
+
+    if (remainingSeconds === 0) {
+      return `Hace ${minutes} min`;
+    }
+
+    return `Hace ${minutes} min ${remainingSeconds} s`;
+  }
+
+
+  if (hours < 24) {
+
+    const remainingMinutes =
+      minutes % 60;
+
+    if (remainingMinutes === 0) {
+      return `Hace ${hours} h`;
+    }
+
+    return `Hace ${hours} h ${remainingMinutes} min`;
+  }
+
+
+  if (days < 7) {
+
+    const remainingHours =
+      hours % 24;
+
+    if (remainingHours === 0) {
+      return `Hace ${days} días`;
+    }
+
+    return `Hace ${days} días ${remainingHours} h`;
+  }
+
+
+  return `Hace ${days} días`;
+}
+
+
+function renderLastRankingUpdate() {
+
+  const text =
+    document.getElementById(
+      "rankingUpdateText"
+    );
+
+  const time =
+    document.getElementById(
+      "rankingUpdateTime"
+    );
+
+
+  if (!text || !time) {
+    return;
+  }
+
+
+  if (!lastRankingUpdate) {
+
+    text.textContent =
+      "Sin actualizaciones";
+
+    time.textContent =
+      "--";
+
+    return;
+  }
+
+
+  text.textContent =
+    formatElapsedTime(
+      lastRankingUpdate
+    );
+
+
+  const date =
+    new Date(
+      lastRankingUpdate
+    );
+
+
+  time.textContent =
+    `Actualizado a las ${date.toLocaleTimeString(
+      "es-ES",
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      }
+    )
+    }`;
+}
+
+setInterval(
+  renderLastRankingUpdate,
+  1000
+);
 
 
 function showError(
@@ -1149,6 +1363,10 @@ function subscribeNormalRanking(
               sortByMoney
             );
 
+        updateLastRankingUpdate(
+          rankingPeople[tableIndex]
+        );
+
 
         renderRanking(
           tableIndex
@@ -1274,7 +1492,9 @@ function subscribe68Ranking() {
               sortByMoney
             );
 
-
+            updateLastRankingUpdate(
+              rankingPeople[3]
+            );
             renderRanking(3);
 
           },
@@ -2458,3 +2678,14 @@ loadSession();
 updateSessionUI();
 
 subscribeAllRankings();
+
+const materialsRankingBtn = document.getElementById("materialsRankingBtn");
+const carPartsRankingBtn = document.getElementById("carPartsRankingBtn");
+
+materialsRankingBtn?.addEventListener("click", () => {
+  window.location.href = "materiales.html";
+});
+
+carPartsRankingBtn?.addEventListener("click", () => {
+  window.location.href = "partes.html";
+});

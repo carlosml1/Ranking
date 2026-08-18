@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Ranking Partes de Coche</title>
+
+  <link rel="stylesheet" href="styles.css?v=13">
+</head>
+
+<body>
+
+  <!-- BARRA SUPERIOR -->
+
+  <header class="topbar">
+
+    <div class="brand">
+
+      <div class="brand-dot"></div>
+
+      <div>
+        <h1>Ranking Partes de Coche</h1>
+        <p>Clasificación por partes de coche</p>
+      </div>
+
+    </div>
+
+
+    <div class="top-actions">
+
+      <button
+        id="drugBtn"
+        class="secondary-btn"
+        type="button">
+        Droga
+      </button>
+
+
+      <button
+        id="materialsRankingBtn"
+        class="secondary-btn"
+        type="button">
+        Ranking Materiales
+      </button>
+
+
+      <div
+        id="statusPill"
+        class="status-pill">
+        Solo lectura
+      </div>
+
+
+      <div id="sessionArea"></div>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- CONTENIDO -->
+
+  <main class="app-shell parts-page">
+
+
+
+    <!-- RANKING -->
+
+    <section class="ranking-card parts-ranking-card">
+
+      <div class="table-header">
+
+        <div>
+
+          <span class="eyebrow">
+            CLASIFICACIÓN
+          </span>
+
+          <h3>
+            Partes de Coche
+          </h3>
+
+        </div>
+
+
+        <div
+          id="totalKg"
+          class="table-indicator">
+          0 kg
+        </div>
+
+      </div>
+
+
+
+      <div class="table-wrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Pos.
+              </th>
+
+              <th>
+                Nombre
+              </th>
+
+              <th class="kg-column">
+                Cantidad
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody id="carPartsRankingBody">
+
+            <tr>
+
+              <td
+                colspan="3"
+                class="empty">
+
+                Cargando…
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- BOTÓN PARA ADMIN -->
+
+      <div
+        id="adminActions"
+        class="admin-actions hidden">
+
+        <button
+          id="addCarPartBtn"
+          class="primary-btn"
+          type="button">
+
+          + Añadir persona
+
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+
+  <!-- AÑADIR PERSONA -->
+
+  <dialog
+    id="addPartDialog"
+    class="dialog">
+
+    <form
+      id="addPartForm"
+      class="auth-card">
+
+      <button
+        type="button"
+        id="closeAddPart"
+        class="close-btn"
+        aria-label="Cerrar">
+
+        ×
+
+      </button>
+
+
+      <span class="eyebrow">
+        NUEVA PERSONA
+      </span>
+
+
+      <h2>
+        Añadir al ranking
+      </h2>
+
+
+      <label for="partName">
+        Nombre
+      </label>
+
+      <input
+        id="partName"
+        type="text"
+        maxlength="40"
+        required
+        placeholder="Ej. Carlos">
+
+
+
+      <label for="partKg">
+        Cantidad en kg
+      </label>
+
+      <div class="kg-input">
+
+        <input
+          id="partKg"
+          type="number"
+          min="0"
+          step="0.01"
+          required
+          placeholder="0">
+
+        <span>
+          kg
+        </span>
+
+      </div>
+
+
+
+      <label for="partPhoto">
+        Foto
+      </label>
+
+      <input
+        id="partPhoto"
+        type="file"
+        accept="image/*">
+
+
+
+      <p class="helper">
+        Introduce el nombre, la cantidad en kg y,
+        opcionalmente, una foto.
+      </p>
+
+
+      <button
+        id="savePartBtn"
+        class="primary-btn"
+        type="submit">
+
+        Añadir al ranking
+
+      </button>
+
+
+      <p
+        id="addPartMessage"
+        class="form-message">
+      </p>
+
+    </form>
+
+  </dialog>
+
+
+
+  <!-- AÑADIR KG -->
+
+  <dialog
+    id="addKgDialog"
+    class="dialog">
+
+    <form
+      id="addKgForm"
+      class="auth-card">
+
+      <button
+        type="button"
+        id="closeAddKg"
+        class="close-btn"
+        aria-label="Cerrar">
+
+        ×
+
+      </button>
+
+
+      <span class="eyebrow">
+        AÑADIR CANTIDAD
+      </span>
+
+
+      <h2 id="addKgTitle">
+        Añadir kg
+      </h2>
+
+
+      <label for="additionalKg">
+        Cantidad
+      </label>
+
+      <div class="kg-input">
+
+        <input
+          id="additionalKg"
+          type="number"
+          min="0.01"
+          step="0.01"
+          required
+          placeholder="0">
+
+        <span>
+          kg
+        </span>
+
+      </div>
+
+
+      <button
+        class="primary-btn"
+        type="submit">
+
+        Añadir kg
+
+      </button>
+
+
+      <p
+        id="addKgMessage"
+        class="form-message">
+      </p>
+
+    </form>
+
+  </dialog>
+
+
+
+  <!-- SCRIPT -->
+
+  <script
+    type="module"
+    src="partes.js">
+  </script>
+
+</body>
+
+</html>
